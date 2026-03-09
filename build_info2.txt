@@ -1,0 +1,449 @@
+Initialized native services in: C:\Users\musta\.gradle\native
+Initialized jansi services in: C:\Users\musta\.gradle\native
+Found daemon DaemonInfo{pid=15412, address=[77658e14-9334-459f-92cf-61bf1e9f72c0 port:2711, addresses:[/127.0.0.1]], state=Idle, lastBusy=1773017869481, context=DefaultDaemonContext[uid=fc89cda6-590b-4fdd-9127-5f4bc558110a,javaHome=C:\Program Files\Eclipse Adoptium\jdk-25.0.0.36-hotspot,javaVersion=25,javaVendor=Eclipse Adoptium,daemonRegistryDir=C:\Users\musta\.gradle\daemon,pid=15412,idleTimeout=10800000,priority=NORMAL,applyInstrumentationAgent=true,nativeServicesMode=ENABLED,daemonOpts=-Xmx2048m,-Dfile.encoding=UTF-8,-Duser.country=US,-Duser.language=en,-Duser.variant]} however its context does not match the desired criteria.
+JVM is incompatible.
+Wanted: DaemonRequestContext{jvmCriteria=C:\Program Files\Android\Android Studio\jbr (no JDK specified, using current Java home), daemonOpts=[-Xmx2048m, -Dfile.encoding=UTF-8, -Duser.country=US, -Duser.language=en, -Duser.variant], applyInstrumentationAgent=true, nativeServicesMode=ENABLED, priority=NORMAL}
+Actual: DefaultDaemonContext[uid=fc89cda6-590b-4fdd-9127-5f4bc558110a,javaHome=C:\Program Files\Eclipse Adoptium\jdk-25.0.0.36-hotspot,javaVersion=25,javaVendor=Eclipse Adoptium,daemonRegistryDir=C:\Users\musta\.gradle\daemon,pid=15412,idleTimeout=10800000,priority=NORMAL,applyInstrumentationAgent=true,nativeServicesMode=ENABLED,daemonOpts=-Xmx2048m,-Dfile.encoding=UTF-8,-Duser.country=US,-Duser.language=en,-Duser.variant]
+
+  Looking for a different daemon...
+The client will now receive all logging from the daemon (pid: 6016). The daemon log file: C:\Users\musta\.gradle\daemon\8.13\daemon-6016.out.log
+Starting 27th build in daemon [uptime: 1 hrs 8 mins 28.989 secs, performance: 99%, GC rate: 0.00/s, heap usage: 0% of 2 GiB]
+Using 12 worker leases.
+Now considering [C:\Projects\yurtdolap_deneme\YurtDolap] as hierarchies to watch
+Watching the file system is configured to be enabled if available
+File system watching is active
+Starting Build
+Invalidating in-memory cache of C:\Users\musta\.gradle\caches\8.13\fileHashes\fileHashes.bin
+Invalidating in-memory cache of C:\Users\musta\.gradle\caches\8.13\fileHashes\resourceHashesCache.bin
+Invalidating in-memory cache of C:\Users\musta\.gradle\caches\journal-1\file-access.bin
+Settings evaluated using settings file 'C:\Projects\yurtdolap_deneme\YurtDolap\settings.gradle.kts'.
+Projects loaded. Root project using build file 'C:\Projects\yurtdolap_deneme\YurtDolap\build.gradle.kts'.
+Included projects: [root project 'YurtDolapApp', project ':app']
+
+> Configure project :
+Evaluating root project 'YurtDolapApp' using build file 'C:\Projects\yurtdolap_deneme\YurtDolap\build.gradle.kts'.
+Resolved plugin [id: 'com.android.application', version: '8.13.2', apply: false]
+Resolved plugin [id: 'org.jetbrains.kotlin.android', version: '2.0.21', apply: false]
+Resolved plugin [id: 'org.jetbrains.kotlin.plugin.compose', version: '2.0.21', apply: false]
+Resolved plugin [id: 'com.google.dagger.hilt.android', version: '2.51.1', apply: false]
+Resolved plugin [id: 'com.google.devtools.ksp', version: '2.0.21-1.0.25', apply: false]
+Resolved plugin [id: 'com.google.gms.google-services', version: '4.4.2', apply: false]
+
+> Configure project :app
+Evaluating project ':app' using build file 'C:\Projects\yurtdolap_deneme\YurtDolap\app\build.gradle.kts'.
+Resolved plugin [id: 'com.android.application', version: '8.13.2']
+Resolved plugin [id: 'org.jetbrains.kotlin.android', version: '2.0.21']
+Resolved plugin [id: 'org.jetbrains.kotlin.plugin.compose', version: '2.0.21']
+Resolved plugin [id: 'com.google.dagger.hilt.android', version: '2.51.1']
+Resolved plugin [id: 'com.google.devtools.ksp', version: '2.0.21-1.0.25']
+Resolved plugin [id: 'com.google.gms.google-services', version: '4.4.2']
+Using default execution profile
+Using Kotlin Gradle Plugin gradle85 variant
+Detected Android Gradle Plugin compose compiler configuration
+Adding -Xuse-inline-scopes-numbers Kotlin compiler flag for task :app:compileDebugKotlin
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Adding -Xuse-inline-scopes-numbers Kotlin compiler flag for task :app:compileDebugAndroidTestKotlin
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+All projects evaluated.
+Task name matched 'assembleDebug'
+Selected primary task 'assembleDebug' from project :
+Tasks to be executed: [task ':app:preBuild', task ':app:preDebugBuild', task ':app:mergeDebugNativeDebugMetadata', task ':app:checkKotlinGradlePluginConfigurationErrors', task ':app:checkDebugAarMetadata', task ':app:processDebugNavigationResources', task ':app:compileDebugNavigationResources', task ':app:generateDebugResValues', task ':app:processDebugGoogleServices', task ':app:mapDebugSourceSetPaths', task ':app:generateDebugResources', task ':app:mergeDebugResources', task ':app:packageDebugResources', task ':app:parseDebugLocalResources', task ':app:createDebugCompatibleScreenManifests', task ':app:extractDeepLinksDebug', task ':app:processDebugMainManifest', task ':app:processDebugManifest', task ':app:processDebugManifestForPackage', task ':app:processDebugResources', task ':app:kspDebugKotlin', task ':app:compileDebugKotlin', task ':app:javaPreCompileDebug', task ':app:compileDebugJavaWithJavac', task ':app:mergeDebugShaders', task ':app:compileDebugShaders', task ':app:generateDebugAssets', task ':app:mergeDebugAssets', task ':app:compressDebugAssets', task ':app:hiltAggregateDepsDebug', task ':app:hiltJavaCompileDebug', task ':app:processDebugJavaRes', task ':app:mergeDebugJavaResource', task ':app:checkDebugDuplicateClasses', task ':app:desugarDebugFileDependencies', task ':app:mergeExtDexDebug', task ':app:mergeLibDexDebug', task ':app:transformDebugClassesWithAsm', task ':app:dexBuilderDebug', task ':app:mergeProjectDexDebug', task ':app:mergeDebugJniLibFolders', task ':app:mergeDebugNativeLibs', task ':app:stripDebugDebugSymbols', task ':app:validateSigningDebug', task ':app:writeDebugAppMetadata', task ':app:writeDebugSigningConfigVersions', task ':app:packageDebug', task ':app:createDebugApkListingFileRedirect', task ':app:assembleDebug']
+Tasks that were excluded: []
+Resolve mutations for :app:preBuild (Thread[#3561,Execution worker,5,main]) started.
+:app:preBuild (Thread[#3561,Execution worker,5,main]) started.
+
+> Task :app:preBuild UP-TO-DATE
+Skipping task ':app:preBuild' as it has no actions.
+Resolve mutations for :app:preDebugBuild (Thread[#3561,Execution worker,5,main]) started.
+:app:preDebugBuild (Thread[#3561,Execution worker,5,main]) started.
+
+> Task :app:preDebugBuild UP-TO-DATE
+Skipping task ':app:preDebugBuild' as it has no actions.
+Resolve mutations for :app:mergeDebugNativeDebugMetadata (Thread[#3561,Execution worker,5,main]) started.
+:app:mergeDebugNativeDebugMetadata (Thread[#3561,Execution worker,5,main]) started.
+
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+Skipping task ':app:mergeDebugNativeDebugMetadata' as it has no source files and no previous output files.
+Resolve mutations for :app:checkKotlinGradlePluginConfigurationErrors (Thread[#3561,Execution worker,5,main]) started.
+:app:checkKotlinGradlePluginConfigurationErrors (Thread[#3561,Execution worker,5,main]) started.
+
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+Skipping task ':app:checkKotlinGradlePluginConfigurationErrors' as task onlyIf 'errorDiagnostics are present' is false.
+Resolve mutations for :app:checkDebugAarMetadata (Thread[#3561,Execution worker,5,main]) started.
+:app:checkDebugAarMetadata (Thread[#3561,Execution worker,5,main]) started.
+
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+Caching disabled for task ':app:checkDebugAarMetadata' because:
+  Build cache is disabled
+  Caching has been disabled for the task
+Skipping task ':app:checkDebugAarMetadata' as it is up-to-date.
+Resolve mutations for :app:processDebugNavigationResources (Thread[#3561,Execution worker,5,main]) started.
+:app:processDebugNavigationResources (Thread[#3561,Execution worker,5,main]) started.
+
+> Task :app:processDebugNavigationResources UP-TO-DATE
+Caching disabled for task ':app:processDebugNavigationResources' because:
+  Build cache is disabled
+Skipping task ':app:processDebugNavigationResources' as it is up-to-date.
+Resolve mutations for :app:compileDebugNavigationResources (Thread[#3561,Execution worker,5,main]) started.
+:app:compileDebugNavigationResources (Thread[#3561,Execution worker,5,main]) started.
+
+> Task :app:compileDebugNavigationResources UP-TO-DATE
+Caching disabled for task ':app:compileDebugNavigationResources' because:
+  Build cache is disabled
+Skipping task ':app:compileDebugNavigationResources' as it is up-to-date.
+Resolve mutations for :app:generateDebugResValues (Thread[#3561,Execution worker,5,main]) started.
+:app:generateDebugResValues (Thread[#3561,Execution worker,5,main]) started.
+
+> Task :app:generateDebugResValues UP-TO-DATE
+Caching disabled for task ':app:generateDebugResValues' because:
+  Build cache is disabled
+Skipping task ':app:generateDebugResValues' as it is up-to-date.
+Resolve mutations for :app:processDebugGoogleServices (Thread[#3561,Execution worker,5,main]) started.
+:app:processDebugGoogleServices (Thread[#3561,Execution worker,5,main]) started.
+
+> Task :app:processDebugGoogleServices UP-TO-DATE
+Caching disabled for task ':app:processDebugGoogleServices' because:
+  Build cache is disabled
+Skipping task ':app:processDebugGoogleServices' as it is up-to-date.
+Resolve mutations for :app:mapDebugSourceSetPaths (Thread[#3561,Execution worker,5,main]) started.
+:app:mapDebugSourceSetPaths (Thread[#3566,Execution worker Thread 6,5,main]) started.
+
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+Caching disabled for task ':app:mapDebugSourceSetPaths' because:
+  Build cache is disabled
+  Caching has been disabled for the task
+Skipping task ':app:mapDebugSourceSetPaths' as it is up-to-date.
+Resolve mutations for :app:generateDebugResources (Thread[#3566,Execution worker Thread 6,5,main]) started.
+:app:generateDebugResources (Thread[#3566,Execution worker Thread 6,5,main]) started.
+
+> Task :app:generateDebugResources UP-TO-DATE
+Caching disabled for task ':app:generateDebugResources' because:
+  Build cache is disabled
+Skipping task ':app:generateDebugResources' as it is up-to-date.
+Resolve mutations for :app:mergeDebugResources (Thread[#3566,Execution worker Thread 6,5,main]) started.
+:app:mergeDebugResources (Thread[#3566,Execution worker Thread 6,5,main]) started.
+
+> Task :app:mergeDebugResources UP-TO-DATE
+Caching disabled for task ':app:mergeDebugResources' because:
+  Build cache is disabled
+Skipping task ':app:mergeDebugResources' as it is up-to-date.
+Resolve mutations for :app:packageDebugResources (Thread[#3566,Execution worker Thread 6,5,main]) started.
+:app:packageDebugResources (Thread[#3566,Execution worker Thread 6,5,main]) started.
+
+> Task :app:packageDebugResources UP-TO-DATE
+Caching disabled for task ':app:packageDebugResources' because:
+  Build cache is disabled
+Skipping task ':app:packageDebugResources' as it is up-to-date.
+Resolve mutations for :app:parseDebugLocalResources (Thread[#3566,Execution worker Thread 6,5,main]) started.
+:app:parseDebugLocalResources (Thread[#3566,Execution worker Thread 6,5,main]) started.
+
+> Task :app:parseDebugLocalResources UP-TO-DATE
+Caching disabled for task ':app:parseDebugLocalResources' because:
+  Build cache is disabled
+Skipping task ':app:parseDebugLocalResources' as it is up-to-date.
+Resolve mutations for :app:createDebugCompatibleScreenManifests (Thread[#3566,Execution worker Thread 6,5,main]) started.
+:app:createDebugCompatibleScreenManifests (Thread[#3566,Execution worker Thread 6,5,main]) started.
+
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+Caching disabled for task ':app:createDebugCompatibleScreenManifests' because:
+  Build cache is disabled
+  Caching has been disabled for the task
+Skipping task ':app:createDebugCompatibleScreenManifests' as it is up-to-date.
+Resolve mutations for :app:extractDeepLinksDebug (Thread[#3566,Execution worker Thread 6,5,main]) started.
+:app:extractDeepLinksDebug (Thread[#3566,Execution worker Thread 6,5,main]) started.
+
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+Caching disabled for task ':app:extractDeepLinksDebug' because:
+  Build cache is disabled
+Skipping task ':app:extractDeepLinksDebug' as it is up-to-date.
+Resolve mutations for :app:processDebugMainManifest (Thread[#3566,Execution worker Thread 6,5,main]) started.
+:app:processDebugMainManifest (Thread[#3566,Execution worker Thread 6,5,main]) started.
+
+> Task :app:processDebugMainManifest UP-TO-DATE
+Caching disabled for task ':app:processDebugMainManifest' because:
+  Build cache is disabled
+Skipping task ':app:processDebugMainManifest' as it is up-to-date.
+Resolve mutations for :app:processDebugManifest (Thread[#3566,Execution worker Thread 6,5,main]) started.
+:app:processDebugManifest (Thread[#3566,Execution worker Thread 6,5,main]) started.
+
+> Task :app:processDebugManifest UP-TO-DATE
+Caching disabled for task ':app:processDebugManifest' because:
+  Build cache is disabled
+Skipping task ':app:processDebugManifest' as it is up-to-date.
+Resolve mutations for :app:processDebugManifestForPackage (Thread[#3566,Execution worker Thread 6,5,main]) started.
+:app:processDebugManifestForPackage (Thread[#3566,Execution worker Thread 6,5,main]) started.
+
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+Custom actions are attached to task ':app:processDebugManifestForPackage'.
+Caching disabled for task ':app:processDebugManifestForPackage' because:
+  Build cache is disabled
+Skipping task ':app:processDebugManifestForPackage' as it is up-to-date.
+Resolve mutations for :app:processDebugResources (Thread[#3566,Execution worker Thread 6,5,main]) started.
+:app:processDebugResources (Thread[#3566,Execution worker Thread 6,5,main]) started.
+
+> Task :app:processDebugResources UP-TO-DATE
+Registered task dependencies: app:debugCompileClasspath
+Skipping misunderstood TO dep string: androidx.compose.ui:ui-tooling
+Skipping misunderstood TO dep string: org.jetbrains.kotlin:kotlin-stdlib
+Skipping misunderstood TO dep string: org.jetbrains.kotlin:kotlin-stdlib
+Skipping misunderstood TO dep string: org.jetbrains.kotlin:kotlin-stdlib
+Skipping misunderstood TO dep string: org.jetbrains.kotlin:kotlin-stdlib
+Skipping misunderstood TO dep string: org.jetbrains.kotlin:kotlin-stdlib
+Skipping misunderstood TO dep string: org.jetbrains.kotlin:kotlin-stdlib
+Skipping misunderstood TO dep string: org.jetbrains.kotlin:kotlin-stdlib
+Skipping misunderstood TO dep string: org.jetbrains.kotlin:kotlin-stdlib
+Skipping misunderstood TO dep string: org.jetbrains.kotlin:kotlin-stdlib
+Skipping misunderstood TO dep string: org.jetbrains.kotlin:kotlin-stdlib
+Skipping misunderstood TO dep string: org.jetbrains.kotlin:kotlin-stdlib
+Skipping misunderstood TO dep string: org.jetbrains.kotlin:kotlin-stdlib
+Skipping misunderstood TO dep string: org.jetbrains.kotlin:kotlin-stdlib
+Skipping misunderstood TO dep string: org.jetbrains.kotlin:kotlin-stdlib
+Skipping misunderstood TO dep string: org.jetbrains.kotlin:kotlin-stdlib
+Skipping misunderstood TO dep string: org.jetbrains.kotlin:kotlin-stdlib
+Skipping misunderstood TO dep string: org.jetbrains.kotlin:kotlin-stdlib
+Skipping misunderstood TO dep string: androidx.compose.ui:ui-test-manifest
+Skipping misunderstood TO dep string: androidx.compose.ui:ui
+Skipping misunderstood TO dep string: androidx.compose.ui:ui-graphics
+Skipping misunderstood TO dep string: androidx.compose.ui:ui-tooling-preview
+Skipping misunderstood TO dep string: androidx.compose.material3:material3
+Skipping misunderstood TO dep string: com.google.firebase:firebase-analytics
+Skipping misunderstood TO dep string: com.google.firebase:firebase-auth-ktx
+Skipping misunderstood TO dep string: com.google.firebase:firebase-firestore-ktx
+Skipping misunderstood TO dep string: com.google.firebase:firebase-storage-ktx
+Starting dependency analysis
+Caching disabled for task ':app:processDebugResources' because:
+  Build cache is disabled
+Skipping task ':app:processDebugResources' as it is up-to-date.
+Resolve mutations for :app:kspDebugKotlin (Thread[#3566,Execution worker Thread 6,5,main]) started.
+:app:kspDebugKotlin (Thread[#3566,Execution worker Thread 6,5,main]) started.
+
+> Task :app:kspDebugKotlin UP-TO-DATE
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\java', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\java', not found
+Registered task dependencies: app:kotlinCompilerClasspath
+Starting dependency analysis
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\java', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\java', not found
+Caching disabled for task ':app:kspDebugKotlin' because:
+  Build cache is disabled
+Skipping task ':app:kspDebugKotlin' as it is up-to-date.
+Resolve mutations for :app:compileDebugKotlin (Thread[#3566,Execution worker Thread 6,5,main]) started.
+:app:compileDebugKotlin (Thread[#3566,Execution worker Thread 6,5,main]) started.
+Resolve mutations for :app:javaPreCompileDebug (Thread[#3564,Execution worker Thread 4,5,main]) started.
+:app:javaPreCompileDebug (Thread[#3564,Execution worker Thread 4,5,main]) started.
+
+> Task :app:javaPreCompileDebug UP-TO-DATE
+Registered task dependencies: app:_agp_internal_javaPreCompileDebug_kspClasspath
+Starting dependency analysis
+Caching disabled for task ':app:javaPreCompileDebug' because:
+  Build cache is disabled
+Skipping task ':app:javaPreCompileDebug' as it is up-to-date.
+Resolve mutations for :app:mergeDebugShaders (Thread[#3564,Execution worker Thread 4,5,main]) started.
+:app:mergeDebugShaders (Thread[#3564,Execution worker Thread 4,5,main]) started.
+
+> Task :app:mergeDebugShaders UP-TO-DATE
+Caching disabled for task ':app:mergeDebugShaders' because:
+  Build cache is disabled
+  Simple merging task
+Skipping task ':app:mergeDebugShaders' as it is up-to-date.
+Resolve mutations for :app:compileDebugShaders (Thread[#3564,Execution worker Thread 4,5,main]) started.
+:app:compileDebugShaders (Thread[#3564,Execution worker Thread 4,5,main]) started.
+
+> Task :app:compileDebugShaders NO-SOURCE
+Skipping task ':app:compileDebugShaders' as it has no source files and no previous output files.
+Resolve mutations for :app:generateDebugAssets (Thread[#3564,Execution worker Thread 4,5,main]) started.
+:app:generateDebugAssets (Thread[#3564,Execution worker Thread 4,5,main]) started.
+
+> Task :app:generateDebugAssets UP-TO-DATE
+Skipping task ':app:generateDebugAssets' as it has no actions.
+Resolve mutations for :app:mergeDebugAssets (Thread[#3564,Execution worker Thread 4,5,main]) started.
+:app:mergeDebugAssets (Thread[#3564,Execution worker Thread 4,5,main]) started.
+
+> Task :app:mergeDebugAssets UP-TO-DATE
+Caching disabled for task ':app:mergeDebugAssets' because:
+  Build cache is disabled
+  Simple merging task
+Skipping task ':app:mergeDebugAssets' as it is up-to-date.
+Resolve mutations for :app:compressDebugAssets (Thread[#3564,Execution worker Thread 4,5,main]) started.
+:app:compressDebugAssets (Thread[#3564,Execution worker Thread 4,5,main]) started.
+
+> Task :app:compressDebugAssets UP-TO-DATE
+Caching disabled for task ':app:compressDebugAssets' because:
+  Build cache is disabled
+Skipping task ':app:compressDebugAssets' as it is up-to-date.
+Resolve mutations for :app:checkDebugDuplicateClasses (Thread[#3564,Execution worker Thread 4,5,main]) started.
+:app:checkDebugDuplicateClasses (Thread[#3564,Execution worker Thread 4,5,main]) started.
+
+> Task :app:checkDebugDuplicateClasses UP-TO-DATE
+Caching disabled for task ':app:checkDebugDuplicateClasses' because:
+  Build cache is disabled
+  Caching has been disabled for the task
+Skipping task ':app:checkDebugDuplicateClasses' as it is up-to-date.
+Resolve mutations for :app:desugarDebugFileDependencies (Thread[#3564,Execution worker Thread 4,5,main]) started.
+:app:desugarDebugFileDependencies (Thread[#3564,Execution worker Thread 4,5,main]) started.
+
+> Task :app:desugarDebugFileDependencies UP-TO-DATE
+Caching disabled for task ':app:desugarDebugFileDependencies' because:
+  Build cache is disabled
+Skipping task ':app:desugarDebugFileDependencies' as it is up-to-date.
+Resolve mutations for :app:mergeExtDexDebug (Thread[#3564,Execution worker Thread 4,5,main]) started.
+:app:mergeExtDexDebug (Thread[#3564,Execution worker Thread 4,5,main]) started.
+
+> Task :app:mergeExtDexDebug UP-TO-DATE
+Caching disabled for task ':app:mergeExtDexDebug' because:
+  Build cache is disabled
+Skipping task ':app:mergeExtDexDebug' as it is up-to-date.
+Resolve mutations for :app:mergeLibDexDebug (Thread[#3564,Execution worker Thread 4,5,main]) started.
+:app:mergeLibDexDebug (Thread[#3564,Execution worker Thread 4,5,main]) started.
+
+> Task :app:mergeLibDexDebug UP-TO-DATE
+Caching disabled for task ':app:mergeLibDexDebug' because:
+  Build cache is disabled
+Skipping task ':app:mergeLibDexDebug' as it is up-to-date.
+Resolve mutations for :app:mergeDebugJniLibFolders (Thread[#3564,Execution worker Thread 4,5,main]) started.
+:app:mergeDebugJniLibFolders (Thread[#3564,Execution worker Thread 4,5,main]) started.
+
+> Task :app:mergeDebugJniLibFolders UP-TO-DATE
+Caching disabled for task ':app:mergeDebugJniLibFolders' because:
+  Build cache is disabled
+  Simple merging task
+Skipping task ':app:mergeDebugJniLibFolders' as it is up-to-date.
+Resolve mutations for :app:mergeDebugNativeLibs (Thread[#3564,Execution worker Thread 4,5,main]) started.
+:app:mergeDebugNativeLibs (Thread[#3564,Execution worker Thread 4,5,main]) started.
+
+> Task :app:mergeDebugNativeLibs UP-TO-DATE
+Caching disabled for task ':app:mergeDebugNativeLibs' because:
+  Build cache is disabled
+  Caching has been disabled for the task
+Skipping task ':app:mergeDebugNativeLibs' as it is up-to-date.
+Resolve mutations for :app:stripDebugDebugSymbols (Thread[#3564,Execution worker Thread 4,5,main]) started.
+:app:stripDebugDebugSymbols (Thread[#3564,Execution worker Thread 4,5,main]) started.
+
+> Task :app:stripDebugDebugSymbols UP-TO-DATE
+Caching disabled for task ':app:stripDebugDebugSymbols' because:
+  Build cache is disabled
+  Caching has been disabled for the task
+Skipping task ':app:stripDebugDebugSymbols' as it is up-to-date.
+Resolve mutations for :app:validateSigningDebug (Thread[#3564,Execution worker Thread 4,5,main]) started.
+:app:validateSigningDebug (Thread[#3564,Execution worker Thread 4,5,main]) started.
+
+> Task :app:validateSigningDebug UP-TO-DATE
+Caching disabled for task ':app:validateSigningDebug' because:
+  Build cache is disabled
+  Caching has been disabled for the task
+Skipping task ':app:validateSigningDebug' as it is up-to-date.
+Resolve mutations for :app:writeDebugAppMetadata (Thread[#3564,Execution worker Thread 4,5,main]) started.
+:app:writeDebugAppMetadata (Thread[#3564,Execution worker Thread 4,5,main]) started.
+
+> Task :app:writeDebugAppMetadata UP-TO-DATE
+Caching disabled for task ':app:writeDebugAppMetadata' because:
+  Build cache is disabled
+  Caching has been disabled for the task
+Skipping task ':app:writeDebugAppMetadata' as it is up-to-date.
+Resolve mutations for :app:writeDebugSigningConfigVersions (Thread[#3564,Execution worker Thread 4,5,main]) started.
+:app:writeDebugSigningConfigVersions (Thread[#3564,Execution worker Thread 4,5,main]) started.
+
+> Task :app:writeDebugSigningConfigVersions UP-TO-DATE
+Caching disabled for task ':app:writeDebugSigningConfigVersions' because:
+  Build cache is disabled
+  Caching has been disabled for the task
+Skipping task ':app:writeDebugSigningConfigVersions' as it is up-to-date.
+
+> Task :app:compileDebugKotlin FAILED
+Registered task dependencies: app:kotlinCompilerPluginClasspathDebug
+Starting dependency analysis
+Caching disabled for task ':app:compileDebugKotlin' because:
+  Build cache is disabled
+Task ':app:compileDebugKotlin' is not up-to-date because:
+  Task has failed previously.
+The input changes require a full rebuild for incremental task ':app:compileDebugKotlin'.
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\java', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\java', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\java', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\java', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\java', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\java', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\java', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\java', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\java', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\java', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\java', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\java', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\java', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\java', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\java', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\java', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\java', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\java', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\kotlin', not found
+file or directory 'C:\Projects\yurtdolap_deneme\YurtDolap\app\src\debug\java', not found
+Kotlin source files: C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\data\repository\FirebaseAuthRepositoryImpl.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\data\repository\FirebaseChatRepositoryImpl.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\data\repository\FirebaseProductRepositoryImpl.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\data\repository\FirebaseStorageRepositoryImpl.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\data\repository\FirebaseUserRepositoryImpl.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\di\AppModule.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\di\RepositoryModule.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\domain\model\Category.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\domain\model\ChatRoom.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\domain\model\Message.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\domain\model\Product.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\domain\repository\AuthRepository.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\domain\repository\ChatRepository.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\domain\repository\ProductRepository.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\domain\repository\StorageRepository.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\domain\repository\UserRepository.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\domain\util\Resource.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\MainActivity.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\add\AddProductScreen.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\add\AddProductViewModel.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\chat\ChatDetailScreen.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\chat\ChatDetailViewModel.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\designsystem\components\ProductCard.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\designsystem\components\UIStateWrapper.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\designsystem\components\YurtButton.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\designsystem\components\YurtTextField.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\designsystem\theme\Color.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\designsystem\theme\Shape.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\designsystem\theme\Theme.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\designsystem\theme\Type.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\detail\DetailScreen.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\detail\DetailViewModel.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\home\HomeScreen.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\home\HomeViewModel.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\home\MessagesScreen.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\home\MessagesViewModel.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\home\SearchScreen.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\home\SearchViewModel.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\navigation\BottomNavItem.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\navigation\MainScreen.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\navigation\YurtBottomNavBar.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\profile\ProfileScreen.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\profile\ProfileViewModel.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\saved\SavedScreen.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\presentation\saved\SavedViewModel.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\ui\theme\Color.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\ui\theme\Theme.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\ui\theme\Type.kt, C:\Projects\yurtdolap_deneme\YurtDolap\app\src\main\java\com\yurtdolap\app\YurtDolapApp.kt
+Java source files: C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\data\repository\FirebaseAuthRepositoryImpl_Factory.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\data\repository\FirebaseChatRepositoryImpl_Factory.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\data\repository\FirebaseProductRepositoryImpl_Factory.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\data\repository\FirebaseStorageRepositoryImpl_Factory.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\data\repository\FirebaseUserRepositoryImpl_Factory.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\di\AppModule_ProvideFirebaseAuthFactory.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\di\AppModule_ProvideFirebaseFirestoreFactory.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\di\AppModule_ProvideFirebaseStorageFactory.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\Hilt_MainActivity.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\MainActivity_GeneratedInjector.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\presentation\add\AddProductViewModel_Factory.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\presentation\add\AddProductViewModel_HiltModules.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\presentation\add\AddProductViewModel_HiltModules_KeyModule_ProvideFactory.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\presentation\chat\ChatDetailViewModel_Factory.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\presentation\chat\ChatDetailViewModel_HiltModules.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\presentation\chat\ChatDetailViewModel_HiltModules_KeyModule_ProvideFactory.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\presentation\detail\DetailViewModel_Factory.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\presentation\detail\DetailViewModel_HiltModules.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\presentation\detail\DetailViewModel_HiltModules_KeyModule_ProvideFactory.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\presentation\home\HomeViewModel_Factory.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\presentation\home\HomeViewModel_HiltModules.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\presentation\home\HomeViewModel_HiltModules_KeyModule_ProvideFactory.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\presentation\home\MessagesViewModel_Factory.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\presentation\home\MessagesViewModel_HiltModules.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\presentation\home\MessagesViewModel_HiltModules_KeyModule_ProvideFactory.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\presentation\home\SearchViewModel_Factory.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\presentation\home\SearchViewModel_HiltModules.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\presentation\home\SearchViewModel_HiltModules_KeyModule_ProvideFactory.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\presentation\profile\ProfileViewModel_Factory.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\presentation\profile\ProfileViewModel_HiltModules.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\presentation\profile\ProfileViewModel_HiltModules_KeyModule_ProvideFactory.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\presentation\saved\SavedViewModel_Factory.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\presentation\saved\SavedViewModel_HiltModules.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\presentation\saved\SavedViewModel_HiltModules_KeyModule_ProvideFactory.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\com\yurtdolap\app\YurtDolapApp_GeneratedInjector.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\dagger\hilt\internal\aggregatedroot\codegen\_com_yurtdolap_app_YurtDolapApp.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\hilt_aggregated_deps\_com_yurtdolap_app_di_AppModule.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\hilt_aggregated_deps\_com_yurtdolap_app_di_RepositoryModule.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\hilt_aggregated_deps\_com_yurtdolap_app_MainActivity_GeneratedInjector.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\hilt_aggregated_deps\_com_yurtdolap_app_presentation_add_AddProductViewModel_HiltModules_BindsModule.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\hilt_aggregated_deps\_com_yurtdolap_app_presentation_add_AddProductViewModel_HiltModules_KeyModule.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\hilt_aggregated_deps\_com_yurtdolap_app_presentation_chat_ChatDetailViewModel_HiltModules_BindsModule.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\hilt_aggregated_deps\_com_yurtdolap_app_presentation_chat_ChatDetailViewModel_HiltModules_KeyModule.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\hilt_aggregated_deps\_com_yurtdolap_app_presentation_detail_DetailViewModel_HiltModules_BindsModule.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\hilt_aggregated_deps\_com_yurtdolap_app_presentation_detail_DetailViewModel_HiltModules_KeyModule.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\hilt_aggregated_deps\_com_yurtdolap_app_presentation_home_HomeViewModel_HiltModules_BindsModule.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\hilt_aggregated_deps\_com_yurtdolap_app_presentation_home_HomeViewModel_HiltModules_KeyModule.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\hilt_aggregated_deps\_com_yurtdolap_app_presentation_home_MessagesViewModel_HiltModules_BindsModule.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\hilt_aggregated_deps\_com_yurtdolap_app_presentation_home_MessagesViewModel_HiltModules_KeyModule.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\hilt_aggregated_deps\_com_yurtdolap_app_presentation_home_SearchViewModel_HiltModules_BindsModule.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\hilt_aggregated_deps\_com_yurtdolap_app_presentation_home_SearchViewModel_HiltModules_KeyModule.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\hilt_aggregated_deps\_com_yurtdolap_app_presentation_profile_ProfileViewModel_HiltModules_BindsModule.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\hilt_aggregated_deps\_com_yurtdolap_app_presentation_profile_ProfileViewModel_HiltModules_KeyModule.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\hilt_aggregated_deps\_com_yurtdolap_app_presentation_saved_SavedViewModel_HiltModules_BindsModule.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\hilt_aggregated_deps\_com_yurtdolap_app_presentation_saved_SavedViewModel_HiltModules_KeyModule.java, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\generated\ksp\debug\java\hilt_aggregated_deps\_com_yurtdolap_app_YurtDolapApp_GeneratedInjector.java
+Script source files: 
+Script file extensions: 
+Using Kotlin/JVM incremental compilation
+[KOTLIN] Kotlin compilation 'jdkHome' argument: null
+Options for KOTLIN DAEMON: IncrementalCompilationOptions(super=CompilationOptions(compilerMode=INCREMENTAL_COMPILER, targetPlatform=JVM, reportCategories=[0, 3], reportSeverity=2, requestedCompilationResults=[0], kotlinScriptExtensions=[]), areFileChangesKnown=false, modifiedFiles=null, deletedFiles=null, classpathChanges=NotAvailableForNonIncrementalRun, workingDir=C:\Projects\yurtdolap_deneme\YurtDolap\app\build\kotlin\compileDebugKotlin\cacheable, multiModuleICSettings=MultiModuleICSettings(buildHistoryFile=C:\Projects\yurtdolap_deneme\YurtDolap\app\build\kotlin\compileDebugKotlin\local-state\build-history.bin, useModuleDetection=true), usePreciseJavaTracking=true, icFeatures=IncrementalCompilationFeatures(withAbiSnapshot=false, preciseCompilationResultsBackup=true, keepIncrementalCompilationCachesInMemory=true, enableUnsafeIncrementalCompilationForMultiplatform=false), outputFiles=[C:\Projects\yurtdolap_deneme\YurtDolap\app\build\tmp\kotlin-classes\debug, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\kotlin\compileDebugKotlin\cacheable, C:\Projects\yurtdolap_deneme\YurtDolap\app\build\kotlin\compileDebugKotlin\local-state])
+e: file:///C:/Projects/yurtdolap_deneme/YurtDolap/app/src/main/java/com/yurtdolap/app/presentation/add/AddProductScreen.kt:75:21 No parameter with name 'isLoading' found.
+e: file:///C:/Projects/yurtdolap_deneme/YurtDolap/app/src/main/java/com/yurtdolap/app/presentation/add/AddProductScreen.kt:114:37 Unresolved reference 'layout'.
+e: file:///C:/Projects/yurtdolap_deneme/YurtDolap/app/src/main/java/com/yurtdolap/app/presentation/add/AddProductScreen.kt:114:46 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///C:/Projects/yurtdolap_deneme/YurtDolap/app/src/main/java/com/yurtdolap/app/presentation/add/AddProductScreen.kt:114:58 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///C:/Projects/yurtdolap_deneme/YurtDolap/app/src/main/java/com/yurtdolap/app/presentation/add/AddProductScreen.kt:116:48 Cannot access 'fun RowColumnMeasurePolicy.measure(mainAxisMin: Int, crossAxisMin: Int, mainAxisMax: Int, crossAxisMax: Int, arrangementSpacingInt: Int, measureScope: MeasureScope, measurables: List<Measurable>, placeables: Array<Placeable?>, startIndex: Int, endIndex: Int, crossAxisOffset: IntArray? = ..., currentLineIndex: Int = ...): MeasureResult': it is internal in file.
+e: file:///C:/Projects/yurtdolap_deneme/YurtDolap/app/src/main/java/com/yurtdolap/app/presentation/add/AddProductScreen.kt:117:37 Unresolved reference 'copy'.
+e: file:///C:/Projects/yurtdolap_deneme/YurtDolap/app/src/main/java/com/yurtdolap/app/presentation/add/AddProductScreen.kt:118:52 Unresolved reference 'maxWidth'.
+e: file:///C:/Projects/yurtdolap_deneme/YurtDolap/app/src/main/java/com/yurtdolap/app/presentation/add/AddProductScreen.kt:118:69 Unresolved reference 'roundToPx'.
+e: file:///C:/Projects/yurtdolap_deneme/YurtDolap/app/src/main/java/com/yurtdolap/app/presentation/add/AddProductScreen.kt:121:21 Unresolved reference 'layout'.
+e: file:///C:/Projects/yurtdolap_deneme/YurtDolap/app/src/main/java/com/yurtdolap/app/presentation/add/AddProductScreen.kt:122:48 Unresolved reference 'roundToPx'.
+e: file:///C:/Projects/yurtdolap_deneme/YurtDolap/app/src/main/java/com/yurtdolap/app/presentation/add/AddProductViewModel.kt:81:51 Unresolved reference 'getUser'.
+e: file:///C:/Projects/yurtdolap_deneme/YurtDolap/app/src/main/java/com/yurtdolap/app/presentation/add/AddProductViewModel.kt:82:37 One type argument expected. Use class 'Success' if you don't intend to pass type arguments.
+Finished executing kotlin compiler using DAEMON strategy
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 3s
+32 actionable tasks: 1 executed, 31 up-to-date
+Watched directory hierarchies: [C:\Projects\yurtdolap_deneme\YurtDolap]
