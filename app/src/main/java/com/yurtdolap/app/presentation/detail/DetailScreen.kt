@@ -1,7 +1,17 @@
 package com.yurtdolap.app.presentation.detail
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,6 +38,7 @@ import com.yurtdolap.app.R
 import com.yurtdolap.app.domain.model.Product
 import com.yurtdolap.app.presentation.designsystem.components.UIStateWrapper
 import com.yurtdolap.app.presentation.designsystem.components.YurtPrimaryButton
+import com.yurtdolap.app.presentation.designsystem.components.YurtSecondaryButton
 import com.yurtdolap.app.presentation.designsystem.theme.BackgroundWhite
 import com.yurtdolap.app.presentation.designsystem.theme.CtaGreen
 import com.yurtdolap.app.presentation.designsystem.theme.OutlineSoft
@@ -42,10 +53,17 @@ fun DetailScreen(
     viewModel: DetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val isAdmin by viewModel.isAdmin.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.navigateToChatEvent.collect { chatId ->
             onNavigateToChat(chatId)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.productDeletedEvent.collect {
+            onNavigateBack()
         }
     }
 
@@ -60,7 +78,7 @@ fun DetailScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             ProductImageHeader(product.imageUrl, onNavigateBack)
-            
+
             Column(modifier = Modifier.padding(24.dp)) {
                 ProductInfoBlock(product)
                 Spacer(modifier = Modifier.height(24.dp))
@@ -68,11 +86,20 @@ fun DetailScreen(
                 Spacer(modifier = Modifier.height(24.dp))
                 SellerTrustBlock(product)
                 Spacer(modifier = Modifier.height(32.dp))
-                
+
                 YurtPrimaryButton(
-                    text = "Satıcıya Mesaj At",
+                    text = "Saticiya Mesaj At",
                     onClick = { viewModel.onMessageSellerClicked() }
                 )
+
+                if (isAdmin) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    YurtSecondaryButton(
+                        text = "Admin: Ilani Kaldir",
+                        onClick = { viewModel.deleteProductAsAdmin() }
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(24.dp))
             }
         }
@@ -95,8 +122,7 @@ fun ProductImageHeader(imageUrl: String?, onBackClick: () -> Unit) {
                 modifier = Modifier.fillMaxSize()
             )
         }
-        
-        // Custom Back Button over image respecting Android norms
+
         IconButton(
             onClick = onBackClick,
             modifier = Modifier
@@ -104,8 +130,7 @@ fun ProductImageHeader(imageUrl: String?, onBackClick: () -> Unit) {
                 .background(SurfaceLight.copy(alpha = 0.8f), CircleShape)
                 .align(Alignment.TopStart)
         ) {
-             // Fallback text if no vector icon for back arrow exists yet
-             Text("<", fontWeight = FontWeight.Bold, color = TextDarkPurple)
+            Text("<", fontWeight = FontWeight.Bold, color = TextDarkPurple)
         }
     }
 }
@@ -136,9 +161,9 @@ fun ProductInfoBlock(product: Product) {
             fontWeight = FontWeight.Bold
         )
     }
-    
+
     Spacer(modifier = Modifier.height(16.dp))
-    
+
     Text(
         text = product.title,
         style = MaterialTheme.typography.titleLarge,
@@ -150,12 +175,12 @@ fun ProductInfoBlock(product: Product) {
 @Composable
 fun SellerTrustBlock(product: Product) {
     Text(
-        text = "Satıcı Bilgileri",
+        text = "Satici Bilgileri",
         style = MaterialTheme.typography.titleMedium,
         fontWeight = FontWeight.Bold
     )
     Spacer(modifier = Modifier.height(16.dp))
-    
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -189,14 +214,13 @@ fun SellerTrustBlock(product: Product) {
                 color = TextDarkPurple.copy(alpha = 0.7f)
             )
         }
-        // Trust badge or verification check
         Box(
             modifier = Modifier
                 .background(CtaGreen.copy(alpha = 0.1f), RoundedCornerShape(8.dp))
                 .padding(horizontal = 8.dp, vertical = 4.dp)
         ) {
             Text(
-                text = "Onaylı",
+                text = "Onayli",
                 color = CtaGreen,
                 style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.Bold

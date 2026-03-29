@@ -10,6 +10,8 @@ import com.yurtdolap.app.domain.repository.ProductRepository
 import com.yurtdolap.app.domain.repository.StorageRepository
 import com.yurtdolap.app.domain.repository.UserRepository
 import com.yurtdolap.app.data.repository.FirebaseChatRepositoryImpl
+import com.yurtdolap.app.data.repository.FirebaseLocationRepositoryImpl
+import com.yurtdolap.app.domain.repository.LocationRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -49,4 +51,10 @@ abstract class RepositoryModule {
     abstract fun bindUserRepository(
         userRepositoryImpl: FirebaseUserRepositoryImpl
     ): UserRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindLocationRepository(
+        locationRepositoryImpl: FirebaseLocationRepositoryImpl
+    ): LocationRepository
 }

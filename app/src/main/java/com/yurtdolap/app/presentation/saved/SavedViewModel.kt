@@ -8,6 +8,7 @@ import com.yurtdolap.app.domain.repository.UserRepository
 import com.yurtdolap.app.domain.util.Resource
 import com.yurtdolap.app.presentation.designsystem.components.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,13 +29,15 @@ class SavedViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow<UIState<SavedState>>(UIState.Idle)
     val uiState: StateFlow<UIState<SavedState>> = _uiState.asStateFlow()
+    private var loadSavedProductsJob: Job? = null
 
     init {
         loadSavedProducts()
     }
 
     fun loadSavedProducts() {
-        viewModelScope.launch {
+        loadSavedProductsJob?.cancel()
+        loadSavedProductsJob = viewModelScope.launch {
             _uiState.value = UIState.Loading
 
             combine(

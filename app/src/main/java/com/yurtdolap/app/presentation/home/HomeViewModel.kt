@@ -9,7 +9,7 @@ import com.yurtdolap.app.domain.repository.UserRepository
 import com.yurtdolap.app.domain.util.Resource
 import com.yurtdolap.app.presentation.designsystem.components.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,13 +32,15 @@ class HomeViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow<UIState<HomeState>>(UIState.Idle)
     val uiState: StateFlow<UIState<HomeState>> = _uiState.asStateFlow()
+    private var loadHomeDataJob: Job? = null
 
     init {
         loadHomeData()
     }
 
     fun loadHomeData(categoryId: String? = null) {
-        viewModelScope.launch {
+        loadHomeDataJob?.cancel()
+        loadHomeDataJob = viewModelScope.launch {
             _uiState.value = UIState.Loading
 
             combine(

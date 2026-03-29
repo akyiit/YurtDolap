@@ -120,23 +120,8 @@ fun RegisterScreen(
             )
             Spacer(modifier = Modifier.height(16.dp))
             
-            val cities = listOf("İstanbul", "Ankara", "İzmir", "Bursa", "Eskişehir", "Antalya", "Diğer")
-            val dormitories = listOf(
-                "Fatih Sultan Mehmet KYK (Erkek)",
-                "Vezneciler KYK (Kız)",
-                "Cevizlibağ KYK (Kız)",
-                "Atatürk Öğrenci Yurdu KYK",
-                "Edirnekapı KYK Yurdu",
-                "Kadıköy Atatürk KYK",
-                "Ortaköy KYK",
-                "Yunus Emre KYK Yurdu",
-                "Sabancı Üniversitesi Yurtları",
-                "Boğaziçi Üniv. Kuzey/Güney Yurtları",
-                "İTÜ Vadi Yurtları",
-                "Özel Yurt",
-                "Apart / Öğrenci Evi",
-                "Diğer"
-            )
+            val cities by viewModel.cities.collectAsState()
+            val dormitories by viewModel.dormitories.collectAsState()
 
             // City
             YurtDropdown(

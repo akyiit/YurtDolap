@@ -2,6 +2,7 @@ package com.yurtdolap.app.data.repository
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import com.yurtdolap.app.domain.model.ChatRoom
 import com.yurtdolap.app.domain.model.Message
@@ -27,23 +28,21 @@ class FirebaseChatRepositoryImpl @Inject constructor(
         productTitle: String,
         productImageUrl: String
     ): Resource<String> {
-        val currentUserId = auth.currentUser?.uid ?: return Resource.Error("Kullanıcı girişi yapılmadı")
-        
+        val currentUserId = auth.currentUser?.uid ?: return Resource.Error("Kullanici girisi yapilmadi")
+
         return try {
-            // Sort to ensure array equality match
             val sortedParticipants = listOf(currentUserId, otherUserId).sorted()
-            
+
             val existingRooms = chatsCollection
                 .whereEqualTo("productId", productId)
                 .whereEqualTo("participants", sortedParticipants)
                 .get()
                 .await()
-                
+
             if (!existingRooms.isEmpty) {
                 return Resource.Success(existingRooms.documents.first().id)
             }
-            
-            // Create new room if none exists
+
             val newChatId = UUID.randomUUID().toString()
             val newRoom = ChatRoom(
                 id = newChatId,
@@ -51,46 +50,63 @@ class FirebaseChatRepositoryImpl @Inject constructor(
                 productId = productId,
                 productTitle = productTitle,
                 productImageUrl = productImageUrl,
-                lastMessage = "Sohbet başladı",
+                lastMessage = "Sohbet basladi",
                 lastMessageTimestamp = System.currentTimeMillis()
             )
-            
+
             chatsCollection.document(newChatId).set(newRoom).await()
             Resource.Success(newChatId)
         } catch (e: Exception) {
-            Resource.Error(e.localizedMessage ?: "Oda oluşturulamadı: Hata oluştu")
+            Resource.Error(e.localizedMessage ?: "Oda olusturulamadi")
         }
     }
 
     override fun getUserChatRooms(): Flow<Resource<List<ChatRoom>>> = callbackFlow {
+        var chatListener: ListenerRegistration? = null
+
+        fun startChatListener(userId: String) {
+            if (chatListener != null) return
+
+            chatListener = chatsCollection
+                .whereArrayContains("participants", userId)
+                .orderBy("lastMessageTimestamp", Query.Direction.DESCENDING)
+                .addSnapshotListener { snapshot, error ->
+                    if (error != null) {
+                        trySend(Resource.Error(error.localizedMessage ?: "Bilinmeyen hata"))
+                        return@addSnapshotListener
+                    }
+
+                    if (snapshot != null) {
+                        val rooms = snapshot.documents.mapNotNull { it.toObject(ChatRoom::class.java) }
+                        trySend(Resource.Success(rooms))
+                    }
+                }
+        }
+
+        trySend(Resource.Loading())
+
         val currentUserId = auth.currentUser?.uid
-        if (currentUserId == null) {
-            trySend(Resource.Error("Kullanıcı girişi yapılmadı"))
-            close()
+        if (currentUserId != null) {
+            startChatListener(currentUserId)
+            awaitClose { chatListener?.remove() }
             return@callbackFlow
         }
 
-        val listener = chatsCollection
-            .whereArrayContains("participants", currentUserId)
-            .orderBy("lastMessageTimestamp", Query.Direction.DESCENDING)
-            .addSnapshotListener { snapshot, error ->
-                if (error != null) {
-                    trySend(Resource.Error(error.localizedMessage ?: "Bilinmeyen hata"))
-                    return@addSnapshotListener
-                }
-                
-                if (snapshot != null) {
-                    val rooms = snapshot.documents.mapNotNull { it.toObject(ChatRoom::class.java) }
-                    trySend(Resource.Success(rooms))
-                }
-            }
-            
-        awaitClose { listener.remove() }
+        val authListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
+            val uid = firebaseAuth.currentUser?.uid ?: return@AuthStateListener
+            startChatListener(uid)
+        }
+        auth.addAuthStateListener(authListener)
+
+        awaitClose {
+            auth.removeAuthStateListener(authListener)
+            chatListener?.remove()
+        }
     }
 
     override fun getChatMessages(chatId: String): Flow<Resource<List<Message>>> = callbackFlow {
         val messagesCollection = chatsCollection.document(chatId).collection("messages")
-        
+
         val listener = messagesCollection
             .orderBy("timestamp", Query.Direction.ASCENDING)
             .addSnapshotListener { snapshot, error ->
@@ -98,43 +114,43 @@ class FirebaseChatRepositoryImpl @Inject constructor(
                     trySend(Resource.Error(error.localizedMessage ?: "Bilinmeyen hata"))
                     return@addSnapshotListener
                 }
-                
+
                 if (snapshot != null) {
                     val msgs = snapshot.documents.mapNotNull { it.toObject(Message::class.java) }
                     trySend(Resource.Success(msgs))
                 }
             }
-            
+
         awaitClose { listener.remove() }
     }
 
     override suspend fun sendMessage(chatId: String, text: String): Resource<Unit> {
-        val currentUserId = auth.currentUser?.uid ?: return Resource.Error("Kullanıcı girişi yapılmadı")
-        
+        val currentUserId = auth.currentUser?.uid ?: return Resource.Error("Kullanici girisi yapilmadi")
+
         return try {
             val messagesCollection = chatsCollection.document(chatId).collection("messages")
             val messageId = UUID.randomUUID().toString()
             val timestamp = System.currentTimeMillis()
-            
+
             val message = Message(
                 id = messageId,
                 senderId = currentUserId,
                 text = text,
                 timestamp = timestamp
             )
-            
+
             messagesCollection.document(messageId).set(message).await()
-            
+
             chatsCollection.document(chatId).update(
                 mapOf(
                     "lastMessage" to text,
                     "lastMessageTimestamp" to timestamp
                 )
             ).await()
-            
+
             Resource.Success(Unit)
         } catch (e: Exception) {
-            Resource.Error(e.localizedMessage ?: "Mesaj gönderilemedi")
+            Resource.Error(e.localizedMessage ?: "Mesaj gonderilemedi")
         }
     }
 }

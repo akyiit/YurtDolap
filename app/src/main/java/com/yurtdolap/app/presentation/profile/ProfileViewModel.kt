@@ -41,7 +41,8 @@ class ProfileViewModel @Inject constructor(
             _uiState.value = UIState.Loading
 
             if (!authRepository.isUserAuthenticatedInFirebase) {
-                authRepository.signInAnonymously()
+                _uiState.value = UIState.Error("Profili görüntülemek için giriş yapın.")
+                return@launch
             }
             
             var userName = "Anonim"

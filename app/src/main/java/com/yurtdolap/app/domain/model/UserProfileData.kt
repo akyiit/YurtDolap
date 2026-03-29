@@ -6,5 +6,6 @@ data class UserProfileData(
     val email: String = "",
     val city: String = "",
     val dormitory: String = "",
-    val createdAt: Long = 0L
+    val createdAt: Long = 0L,
+    val isAdmin: Boolean = false
 )

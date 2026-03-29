@@ -6,11 +6,13 @@ import com.yurtdolap.app.domain.repository.AuthRepository
 import com.yurtdolap.app.domain.util.Resource
 import com.yurtdolap.app.presentation.designsystem.components.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.yurtdolap.app.domain.repository.LocationRepository
 
 data class AuthFormState(
     val email: String = "",
@@ -22,7 +24,8 @@ data class AuthFormState(
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val locationRepository: LocationRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UIState<Unit>>(UIState.Idle)
@@ -30,6 +33,38 @@ class AuthViewModel @Inject constructor(
 
     private val _formState = MutableStateFlow(AuthFormState())
     val formState: StateFlow<AuthFormState> = _formState.asStateFlow()
+
+    private val _cities = MutableStateFlow<List<String>>(emptyList())
+    val cities: StateFlow<List<String>> = _cities.asStateFlow()
+
+    private val _dormitories = MutableStateFlow<List<String>>(emptyList())
+    val dormitories: StateFlow<List<String>> = _dormitories.asStateFlow()
+    private var dormitoriesJob: Job? = null
+
+    init {
+        fetchCities()
+    }
+
+    private fun fetchCities() {
+        viewModelScope.launch {
+            locationRepository.getCities().collect { resource ->
+                if (resource is Resource.Success) {
+                    _cities.value = resource.data?.map { it.name } ?: emptyList()
+                }
+            }
+        }
+    }
+
+    private fun fetchDormitories(cityName: String) {
+        dormitoriesJob?.cancel()
+        dormitoriesJob = viewModelScope.launch {
+            locationRepository.getDormitoriesByCity(cityName).collect { resource ->
+                if (resource is Resource.Success) {
+                    _dormitories.value = resource.data?.map { it.name } ?: emptyList()
+                }
+            }
+        }
+    }
 
     fun onEmailChange(email: String) {
         _formState.value = _formState.value.copy(email = email)
@@ -44,7 +79,8 @@ class AuthViewModel @Inject constructor(
     }
 
     fun onCityChange(city: String) {
-        _formState.value = _formState.value.copy(city = city)
+        _formState.value = _formState.value.copy(city = city, dormitory = "")
+        fetchDormitories(city)
     }
 
     fun onDormitoryChange(dorm: String) {

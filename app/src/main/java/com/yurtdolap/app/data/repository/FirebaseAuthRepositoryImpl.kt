@@ -20,19 +20,21 @@ class FirebaseAuthRepositoryImpl @Inject constructor(
 
     override suspend fun signInAnonymously(): Resource<Unit> {
         return try {
-            auth.signInAnonymously().await()
+            val authResult = auth.signInAnonymously().await()
+            authResult.user?.getIdToken(true)?.await()
             Resource.Success(Unit)
         } catch (e: Exception) {
-            Resource.Error(e.localizedMessage ?: "Bilinmeyen bir hata oluştu")
+            Resource.Error(e.localizedMessage ?: "Bilinmeyen bir hata olustu")
         }
     }
 
     override suspend fun signInWithEmailAndPassword(email: String, password: String): Resource<Unit> {
         return try {
-            auth.signInWithEmailAndPassword(email, password).await()
+            val authResult = auth.signInWithEmailAndPassword(email, password).await()
+            authResult.user?.getIdToken(true)?.await()
             Resource.Success(Unit)
         } catch (e: Exception) {
-            Resource.Error(e.localizedMessage ?: "Giriş yapılamadı. E-posta veya şifre hatalı olabilir.")
+            Resource.Error(e.localizedMessage ?: "Giris yapilamadi. E-posta veya sifre hatali olabilir.")
         }
     }
 
@@ -46,24 +48,26 @@ class FirebaseAuthRepositoryImpl @Inject constructor(
         return try {
             val authResult = auth.createUserWithEmailAndPassword(email, password).await()
             val userId = authResult.user?.uid
-            
+
             if (userId != null) {
-                // Kayıt başarılı, kullanıcı bilgilerini Firestore'a ekle
+                authResult.user?.getIdToken(true)?.await()
+                // Kayit basarili, kullanici bilgilerini Firestore'a ekle
                 val userMap = hashMapOf(
                     "id" to userId,
                     "name" to name,
                     "email" to email,
                     "city" to city,
                     "dormitory" to dormitory,
-                    "createdAt" to System.currentTimeMillis()
+                    "createdAt" to System.currentTimeMillis(),
+                    "isAdmin" to false
                 )
                 firestore.collection("users").document(userId).set(userMap).await()
                 Resource.Success(Unit)
             } else {
-                Resource.Error("Kullanıcı oluşturuldu ancak ID alınamadı.")
+                Resource.Error("Kullanici olusturuldu ancak ID alinamadi.")
             }
         } catch (e: Exception) {
-            Resource.Error(e.localizedMessage ?: "Kayıt işlemi başarısız oldu.")
+            Resource.Error(e.localizedMessage ?: "Kayit islemi basarisiz oldu.")
         }
     }
 
@@ -72,7 +76,7 @@ class FirebaseAuthRepositoryImpl @Inject constructor(
             auth.signOut()
             Resource.Success(Unit)
         } catch (e: Exception) {
-            Resource.Error(e.localizedMessage ?: "Çıkış yapılamadı")
+            Resource.Error(e.localizedMessage ?: "Cikis yapilamadi")
         }
     }
 }
