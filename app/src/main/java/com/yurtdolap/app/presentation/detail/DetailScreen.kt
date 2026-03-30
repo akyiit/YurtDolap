@@ -1,5 +1,6 @@
 package com.yurtdolap.app.presentation.detail
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,10 +17,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,10 +29,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -45,6 +48,8 @@ import com.yurtdolap.app.presentation.designsystem.theme.OutlineSoft
 import com.yurtdolap.app.presentation.designsystem.theme.PrimaryLilac
 import com.yurtdolap.app.presentation.designsystem.theme.SurfaceLight
 import com.yurtdolap.app.presentation.designsystem.theme.TextDarkPurple
+
+private const val TurkishLira = "\u20BA"
 
 @Composable
 fun DetailScreen(
@@ -77,154 +82,285 @@ fun DetailScreen(
                 .background(BackgroundWhite)
                 .verticalScroll(rememberScrollState())
         ) {
-            ProductImageHeader(product.imageUrl, onNavigateBack)
+            ProductImageHeader(
+                imageUrl = product.imageUrl,
+                title = product.title,
+                tag = product.tag,
+                onBackClick = onNavigateBack
+            )
 
-            Column(modifier = Modifier.padding(24.dp)) {
-                ProductInfoBlock(product)
-                Spacer(modifier = Modifier.height(24.dp))
-                Divider(color = OutlineSoft)
-                Spacer(modifier = Modifier.height(24.dp))
-                SellerTrustBlock(product)
-                Spacer(modifier = Modifier.height(32.dp))
-
-                YurtPrimaryButton(
-                    text = "Saticiya Mesaj At",
-                    onClick = { viewModel.onMessageSellerClicked() }
+            Column(modifier = Modifier.padding(20.dp)) {
+                ProductInfoCard(product = product)
+                Spacer(modifier = Modifier.height(16.dp))
+                SellerTrustBlock(product = product)
+                Spacer(modifier = Modifier.height(20.dp))
+                ActionBlock(
+                    isAdmin = isAdmin,
+                    onMessageClick = { viewModel.onMessageSellerClicked() },
+                    onAdminDelete = { viewModel.deleteProductAsAdmin() }
                 )
-
-                if (isAdmin) {
-                    Spacer(modifier = Modifier.height(12.dp))
-                    YurtSecondaryButton(
-                        text = "Admin: Ilani Kaldir",
-                        onClick = { viewModel.deleteProductAsAdmin() }
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
 }
 
 @Composable
-fun ProductImageHeader(imageUrl: String?, onBackClick: () -> Unit) {
+private fun ProductImageHeader(
+    imageUrl: String?,
+    title: String,
+    tag: String,
+    onBackClick: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(300.dp)
+            .height(316.dp)
             .background(SurfaceLight)
     ) {
         if (imageUrl != null) {
             AsyncImage(
                 model = imageUrl,
-                contentDescription = "Detail Image",
+                contentDescription = "Product image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
         }
 
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            androidx.compose.ui.graphics.Color.Transparent,
+                            androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.38f)
+                        )
+                    )
+                )
+        )
+
         IconButton(
             onClick = onBackClick,
             modifier = Modifier
                 .padding(16.dp)
-                .background(SurfaceLight.copy(alpha = 0.8f), CircleShape)
+                .background(SurfaceLight.copy(alpha = 0.9f), CircleShape)
                 .align(Alignment.TopStart)
         ) {
-            Text("<", fontWeight = FontWeight.Bold, color = TextDarkPurple)
+            Text(text = "<", fontWeight = FontWeight.Bold, color = TextDarkPurple)
+        }
+
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(16.dp)
+        ) {
+            Surface(
+                shape = RoundedCornerShape(999.dp),
+                color = PrimaryLilac.copy(alpha = 0.95f)
+            ) {
+                Text(
+                    text = tag,
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = SurfaceLight,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge,
+                color = SurfaceLight,
+                fontWeight = FontWeight.Bold,
+                maxLines = 2
+            )
         }
     }
 }
 
 @Composable
-fun ProductInfoBlock(product: Product) {
+private fun ProductInfoCard(product: Product) {
+    Surface(
+        shape = RoundedCornerShape(16.dp),
+        color = SurfaceLight,
+        border = BorderStroke(1.dp, OutlineSoft)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Surface(
+                    color = CtaGreen.copy(alpha = 0.14f),
+                    shape = RoundedCornerShape(999.dp)
+                ) {
+                    Text(
+                        text = if (product.isAvailable) "Stokta" else "Tukendi",
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                        color = CtaGreen,
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+
+                Text(
+                    text = formatPrice(product.price),
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = CtaGreen,
+                    fontWeight = FontWeight.ExtraBold
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+            HorizontalDivider(color = OutlineSoft)
+            Spacer(modifier = Modifier.height(12.dp))
+
+            InfoRow(label = "Kategori", value = categoryLabel(product.categoryId))
+            InfoRow(label = "Yurt", value = product.dormitory)
+            InfoRow(label = "Durum", value = if (product.isAvailable) "Urun aktif" else "Urun pasif")
+        }
+    }
+}
+
+@Composable
+private fun InfoRow(label: String, value: String) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 5.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(
-            modifier = Modifier
-                .background(PrimaryLilac, RoundedCornerShape(16.dp))
-                .padding(horizontal = 12.dp, vertical = 6.dp)
-        ) {
-            Text(
-                text = product.tag,
-                color = SurfaceLight,
-                style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.Bold
-            )
-        }
         Text(
-            text = product.price,
-            style = MaterialTheme.typography.displayLarge,
-            color = CtaGreen,
-            fontWeight = FontWeight.Bold
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = TextDarkPurple.copy(alpha = 0.7f)
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyMedium,
+            color = TextDarkPurple,
+            fontWeight = FontWeight.SemiBold,
+            textAlign = TextAlign.End
         )
     }
+}
 
-    Spacer(modifier = Modifier.height(16.dp))
+private fun categoryLabel(categoryId: String?): String {
+    return when (categoryId) {
+        "1" -> "Elektronik"
+        "2" -> "Kitap"
+        "3" -> "Mutfak"
+        "4" -> "Kirtasiye"
+        "5" -> "Giyim"
+        else -> "Diger"
+    }
+}
 
-    Text(
-        text = product.title,
-        style = MaterialTheme.typography.titleLarge,
-        fontWeight = FontWeight.Bold,
-        color = TextDarkPurple
-    )
+private fun formatPrice(raw: String): String {
+    val trimmed = raw.trim()
+    if (trimmed.isEmpty()) return trimmed
+    if (trimmed.contains(TurkishLira)) return trimmed
+    if (Regex("\\bTL\\b", RegexOption.IGNORE_CASE).containsMatchIn(trimmed)) {
+        return trimmed.replace(Regex("\\bTL\\b", RegexOption.IGNORE_CASE), TurkishLira)
+    }
+    return "$TurkishLira $trimmed"
 }
 
 @Composable
 fun SellerTrustBlock(product: Product) {
-    Text(
-        text = "Satici Bilgileri",
-        style = MaterialTheme.typography.titleMedium,
-        fontWeight = FontWeight.Bold
-    )
-    Spacer(modifier = Modifier.height(16.dp))
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(SurfaceLight, RoundedCornerShape(12.dp))
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = SurfaceLight,
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(1.dp, OutlineSoft)
     ) {
-        Box(
-            modifier = Modifier
-                .size(48.dp)
-                .background(PrimaryLilac.copy(alpha = 0.2f), CircleShape),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_person),
-                contentDescription = null,
-                tint = PrimaryLilac
-            )
-        }
-        Spacer(modifier = Modifier.width(16.dp))
-        Column(modifier = Modifier.weight(1f)) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = product.sellerName,
-                style = MaterialTheme.typography.bodyLarge,
+                text = "Satici Bilgileri",
+                style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = TextDarkPurple
             )
-            Text(
-                text = product.dormitory,
-                style = MaterialTheme.typography.bodyMedium,
-                color = TextDarkPurple.copy(alpha = 0.7f)
-            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .background(PrimaryLilac.copy(alpha = 0.16f), CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_person),
+                        contentDescription = null,
+                        tint = PrimaryLilac
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(12.dp))
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = product.sellerName,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = TextDarkPurple
+                    )
+                    Text(
+                        text = product.dormitory,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = TextDarkPurple.copy(alpha = 0.75f)
+                    )
+                }
+
+                Surface(
+                    color = CtaGreen.copy(alpha = 0.14f),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = "Onayli",
+                        modifier = Modifier.padding(horizontal = 9.dp, vertical = 5.dp),
+                        color = CtaGreen,
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
         }
-        Box(
-            modifier = Modifier
-                .background(CtaGreen.copy(alpha = 0.1f), RoundedCornerShape(8.dp))
-                .padding(horizontal = 8.dp, vertical = 4.dp)
-        ) {
-            Text(
-                text = "Onayli",
-                color = CtaGreen,
-                style = MaterialTheme.typography.labelMedium,
-                fontWeight = FontWeight.Bold
+    }
+}
+
+@Composable
+private fun ActionBlock(
+    isAdmin: Boolean,
+    onMessageClick: () -> Unit,
+    onAdminDelete: () -> Unit
+) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = SurfaceLight,
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(1.dp, OutlineSoft)
+    ) {
+        Column(modifier = Modifier.padding(14.dp)) {
+            YurtPrimaryButton(
+                text = "Saticiya Mesaj At",
+                onClick = onMessageClick
             )
+
+            if (isAdmin) {
+                Spacer(modifier = Modifier.height(10.dp))
+                YurtSecondaryButton(
+                    text = "Admin: Ilani Kaldir",
+                    onClick = onAdminDelete
+                )
+            }
         }
     }
 }

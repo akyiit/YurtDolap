@@ -3,6 +3,7 @@ package com.yurtdolap.app.data.repository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.yurtdolap.app.domain.model.UserProfileData
 import com.yurtdolap.app.domain.repository.UserRepository
 import com.yurtdolap.app.domain.util.Resource
@@ -102,6 +103,28 @@ class FirebaseUserRepositoryImpl @Inject constructor(
             )
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Profil bilgileri alinamadi")
+        }
+    }
+
+    override suspend fun updateUserProfile(name: String, dormitory: String): Resource<Unit> {
+        val currentUserId = auth.currentUser?.uid ?: return Resource.Error("Kullanici girisi yapilmadi")
+
+        if (name.isBlank() || dormitory.isBlank()) {
+            return Resource.Error("Isim ve yurt bilgisi bos olamaz")
+        }
+
+        return try {
+            usersCollection.document(currentUserId).set(
+                mapOf(
+                    "name" to name.trim(),
+                    "dormitory" to dormitory.trim()
+                ),
+                SetOptions.merge()
+            ).await()
+
+            Resource.Success(Unit)
+        } catch (e: Exception) {
+            Resource.Error(e.localizedMessage ?: "Profil guncellenemedi")
         }
     }
 }

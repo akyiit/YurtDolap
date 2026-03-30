@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.yurtdolap.app.presentation.designsystem.theme.CtaGreen
 import com.yurtdolap.app.presentation.designsystem.theme.PrimaryLilac
 import com.yurtdolap.app.presentation.designsystem.theme.SurfaceLight
@@ -63,9 +64,12 @@ fun YurtBottomNavBar(
                 NavigationBarItem(
                     selected = isSelected,
                     onClick = {
-                        if (!isSelected) {
+                        val poppedToExistingTab = navController.popBackStack(item.route, false)
+                        if (!poppedToExistingTab && !isSelected) {
                             navController.navigate(item.route) {
-                                popUpTo(BottomNavItem.Home.route) { saveState = true }
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
                                 launchSingleTop = true
                                 restoreState = true
                             }

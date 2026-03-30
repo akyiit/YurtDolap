@@ -22,6 +22,7 @@ import com.yurtdolap.app.presentation.home.HomeScreen
 import com.yurtdolap.app.presentation.home.MessagesScreen
 import com.yurtdolap.app.presentation.saved.SavedScreen
 import com.yurtdolap.app.presentation.profile.ProfileScreen
+import com.yurtdolap.app.presentation.profile.EditProfileScreen
 import com.yurtdolap.app.presentation.chat.ChatDetailScreen
 import com.yurtdolap.app.presentation.edit.EditProductScreen
 
@@ -106,8 +107,16 @@ fun MainScreen(onSignOut: () -> Unit) {
                         onNavigateToEdit = { productId ->
                             navController.navigate("edit/$productId")
                         },
+                        onNavigateToEditProfile = {
+                            navController.navigate("edit_profile")
+                        },
                         onSignOut = onSignOut
                     ) 
+                }
+                composable("edit_profile") {
+                    EditProfileScreen(
+                        onNavigateBack = { navController.popBackStack() }
+                    )
                 }
                 composable(
                     route = "edit/{productId}",
