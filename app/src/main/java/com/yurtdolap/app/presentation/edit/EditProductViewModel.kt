@@ -6,6 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yurtdolap.app.domain.model.Category
+import com.yurtdolap.app.domain.model.ProductTags
 import com.yurtdolap.app.domain.repository.ProductRepository
 import com.yurtdolap.app.domain.util.Resource
 import com.yurtdolap.app.presentation.designsystem.components.UIState
@@ -19,11 +20,13 @@ import javax.inject.Inject
 
 data class EditProductState(
     val title: String = "",
+    val description: String = "",
     val price: String = "",
+    val deliveryPreference: String = "",
     val imageUri: Uri? = null,
     val existingImageUrl: String? = null,
     val selectedCategoryId: String? = null,
-    val selectedTag: String = "Satılık",
+    val selectedTag: String = ProductTags.FOR_SALE,
     val categories: List<Category> = listOf(
         Category("1", "Elektronik", "ic_monitor"),
         Category("2", "Kitap", "ic_book"),
@@ -66,7 +69,9 @@ class EditProductViewModel @Inject constructor(
                         resource.data?.let { product ->
                             _formState.value = _formState.value.copy(
                                 title = product.title,
+                                description = product.description,
                                 price = product.price,
+                                deliveryPreference = product.deliveryPreference,
                                 existingImageUrl = product.imageUrl,
                                 selectedCategoryId = product.categoryId,
                                 selectedTag = product.tag
@@ -88,8 +93,16 @@ class EditProductViewModel @Inject constructor(
         _formState.value = _formState.value.copy(title = title)
     }
 
+    fun onDescriptionChange(description: String) {
+        _formState.value = _formState.value.copy(description = description)
+    }
+
     fun onPriceChange(price: String) {
         _formState.value = _formState.value.copy(price = price)
+    }
+
+    fun onDeliveryPreferenceChange(deliveryPreference: String) {
+        _formState.value = _formState.value.copy(deliveryPreference = deliveryPreference)
     }
 
     fun onImageSelect(uri: Uri?) {
@@ -108,8 +121,15 @@ class EditProductViewModel @Inject constructor(
         if (productId == null) return
         val currentState = _formState.value
 
-        if (currentState.title.isBlank() || currentState.price.isBlank() || currentState.selectedCategoryId == null) {
-            _uiState.value = UIState.Error("Lütfen gerekli alanları doldurun.")
+        val isNeedRequest = currentState.selectedTag == ProductTags.NEED_REQUEST
+        if (currentState.title.isBlank() || currentState.selectedCategoryId == null || (!isNeedRequest && currentState.price.isBlank())) {
+            _uiState.value = UIState.Error(
+                if (isNeedRequest) {
+                    "Lütfen başlık ve kategori alanlarını doldurun."
+                } else {
+                    "Lütfen gerekli alanları doldurun."
+                }
+            )
             return
         }
 
@@ -140,7 +160,9 @@ class EditProductViewModel @Inject constructor(
 
             val updates = mapOf(
                 "title" to currentState.title,
-                "price" to currentState.price,
+                "description" to currentState.description.trim(),
+                "price" to if (isNeedRequest && currentState.price.isBlank()) "Bütçe belirtilmedi" else currentState.price,
+                "deliveryPreference" to currentState.deliveryPreference.trim(),
                 "tag" to currentState.selectedTag,
                 "categoryId" to currentState.selectedCategoryId as Any,
                 "imageUrl" to (finalImageUrl ?: "")

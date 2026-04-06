@@ -106,17 +106,18 @@ class FirebaseUserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateUserProfile(name: String, dormitory: String): Resource<Unit> {
+    override suspend fun updateUserProfile(name: String, city: String, dormitory: String): Resource<Unit> {
         val currentUserId = auth.currentUser?.uid ?: return Resource.Error("Kullanici girisi yapilmadi")
 
-        if (name.isBlank() || dormitory.isBlank()) {
-            return Resource.Error("Isim ve yurt bilgisi bos olamaz")
+        if (name.isBlank() || city.isBlank() || dormitory.isBlank()) {
+            return Resource.Error("Isim, sehir ve yurt bilgisi bos olamaz")
         }
 
         return try {
             usersCollection.document(currentUserId).set(
                 mapOf(
                     "name" to name.trim(),
+                    "city" to city.trim(),
                     "dormitory" to dormitory.trim()
                 ),
                 SetOptions.merge()

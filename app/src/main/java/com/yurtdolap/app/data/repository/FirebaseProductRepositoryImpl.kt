@@ -1,6 +1,7 @@
 package com.yurtdolap.app.data.repository
 
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.StorageMetadata
 import com.google.firebase.storage.FirebaseStorage
 import com.yurtdolap.app.domain.model.Product
 import com.yurtdolap.app.domain.repository.ProductRepository
@@ -40,6 +41,7 @@ class FirebaseProductRepositoryImpl @Inject constructor(
             val products = snapshot?.documents?.mapNotNull { doc ->
                 val id = doc.id
                 val title = doc.getString("title") ?: ""
+                val description = doc.getString("description") ?: ""
                 val price = doc.getString("price") ?: ""
                 val imageUrl = doc.getString("imageUrl")
                 val tag = doc.getString("tag") ?: ""
@@ -47,11 +49,13 @@ class FirebaseProductRepositoryImpl @Inject constructor(
                 val sellerName = doc.getString("sellerName") ?: ""
                 val sellerId = doc.getString("sellerId") ?: ""
                 val dormitory = doc.getString("dormitory") ?: ""
+                val deliveryPreference = doc.getString("deliveryPreference") ?: ""
                 val isAvailable = doc.getBoolean("isAvailable") ?: true
 
                 Product(
                     id = id,
                     title = title,
+                    description = description,
                     price = price,
                     imageUrl = imageUrl,
                     tag = tag,
@@ -59,6 +63,7 @@ class FirebaseProductRepositoryImpl @Inject constructor(
                     sellerName = sellerName,
                     sellerId = sellerId,
                     dormitory = dormitory,
+                    deliveryPreference = deliveryPreference,
                     isAvailable = isAvailable
                 )
             } ?: emptyList()
@@ -80,6 +85,7 @@ class FirebaseProductRepositoryImpl @Inject constructor(
 
             if (snapshot != null && snapshot.exists()) {
                 val title = snapshot.getString("title") ?: ""
+                val description = snapshot.getString("description") ?: ""
                 val price = snapshot.getString("price") ?: ""
                 val imageUrl = snapshot.getString("imageUrl")
                 val tag = snapshot.getString("tag") ?: ""
@@ -87,11 +93,13 @@ class FirebaseProductRepositoryImpl @Inject constructor(
                 val sellerName = snapshot.getString("sellerName") ?: ""
                 val sellerId = snapshot.getString("sellerId") ?: ""
                 val dormitory = snapshot.getString("dormitory") ?: ""
+                val deliveryPreference = snapshot.getString("deliveryPreference") ?: ""
                 val isAvailable = snapshot.getBoolean("isAvailable") ?: true
 
                 val product = Product(
                     id = snapshot.id,
                     title = title,
+                    description = description,
                     price = price,
                     imageUrl = imageUrl,
                     tag = tag,
@@ -99,6 +107,7 @@ class FirebaseProductRepositoryImpl @Inject constructor(
                     sellerName = sellerName,
                     sellerId = sellerId,
                     dormitory = dormitory,
+                    deliveryPreference = deliveryPreference,
                     isAvailable = isAvailable
                 )
                 trySend(Resource.Success(product))
@@ -114,6 +123,7 @@ class FirebaseProductRepositoryImpl @Inject constructor(
         return try {
             val productMap = hashMapOf(
                 "title" to product.title,
+                "description" to product.description,
                 "price" to product.price,
                 "imageUrl" to product.imageUrl,
                 "tag" to product.tag,
@@ -121,6 +131,7 @@ class FirebaseProductRepositoryImpl @Inject constructor(
                 "sellerName" to product.sellerName,
                 "sellerId" to product.sellerId,
                 "dormitory" to product.dormitory,
+                "deliveryPreference" to product.deliveryPreference,
                 "isAvailable" to product.isAvailable
             )
             
@@ -149,10 +160,13 @@ class FirebaseProductRepositoryImpl @Inject constructor(
     override suspend fun uploadProductImage(imageBytes: ByteArray, fileName: String): Resource<String> {
         return try {
             val imageRef = storageRef.child(fileName)
+            val metadata = StorageMetadata.Builder()
+                .setContentType("image/jpeg")
+                .build()
             
             // Suspend coroutine until upload succeeds to avoid UploadTask.await() compiler issues
             suspendCancellableCoroutine<Unit> { continuation ->
-                imageRef.putBytes(imageBytes)
+                imageRef.putBytes(imageBytes, metadata)
                     .addOnSuccessListener {
                         if (continuation.isActive) continuation.resume(Unit)
                     }

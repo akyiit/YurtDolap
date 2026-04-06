@@ -43,7 +43,6 @@ class FirebaseLocationRepositoryImpl @Inject constructor(
 
         val subscription = firestore.collection("dormitories")
             .whereEqualTo("cityName", cityName)
-            .orderBy("name", Query.Direction.ASCENDING)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     trySend(Resource.Error(error.localizedMessage ?: "Yurtlar yüklenirken hata oluştu."))
@@ -51,9 +50,9 @@ class FirebaseLocationRepositoryImpl @Inject constructor(
                 }
 
                 if (snapshot != null) {
-                    val dormitories = snapshot.documents.mapNotNull { doc ->
-                        doc.toObject(Dormitory::class.java)?.copy(id = doc.id)
-                    }
+                    val dormitories = snapshot.documents
+                        .mapNotNull { doc -> doc.toObject(Dormitory::class.java)?.copy(id = doc.id) }
+                        .sortedBy { it.name }
                     trySend(Resource.Success(dormitories))
                 }
             }

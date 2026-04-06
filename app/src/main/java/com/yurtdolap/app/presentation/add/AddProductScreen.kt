@@ -27,6 +27,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.compose.foundation.Image
 import androidx.compose.ui.layout.ContentScale
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.yurtdolap.app.domain.model.ProductTags
 import coil.compose.AsyncImage
 import com.yurtdolap.app.presentation.designsystem.components.UIState
 import com.yurtdolap.app.presentation.designsystem.components.YurtPrimaryButton
@@ -42,6 +43,7 @@ fun AddProductScreen(
     val uiState by viewModel.uiState.collectAsState()
     val formState by viewModel.formState.collectAsState()
     val context = LocalContext.current
+    val isNeedRequest = formState.selectedTag == ProductTags.NEED_REQUEST
     
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
@@ -51,7 +53,7 @@ fun AddProductScreen(
 
     LaunchedEffect(uiState) {
         if (uiState is UIState.Success) {
-            Toast.makeText(context, "İlan başarıyla eklendi!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, if (isNeedRequest) "Talep başarıyla eklendi!" else "İlan başarıyla eklendi!", Toast.LENGTH_SHORT).show()
             onNavigateBack() // Go back or home after adding successfully
         } else if (uiState is UIState.Error) {
             Toast.makeText(context, (uiState as UIState.Error).message, Toast.LENGTH_SHORT).show()
@@ -61,7 +63,7 @@ fun AddProductScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Yeni İlan Ekle", fontWeight = FontWeight.Bold) },
+                title = { Text(if (isNeedRequest) "Yeni Talep Ekle" else "Yeni İlan Ekle", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Geri")
@@ -82,7 +84,7 @@ fun AddProductScreen(
                     .padding(24.dp)
             ) {
                 YurtPrimaryButton(
-                    text = if (uiState is UIState.Loading) "Paylaşılıyor..." else "İlanı Paylaş",
+                    text = if (uiState is UIState.Loading) "Paylaşılıyor..." else if (isNeedRequest) "Talebi Paylaş" else "İlanı Paylaş",
                     onClick = { viewModel.addProduct(context) },
                     enabled = uiState !is UIState.Loading,
                     modifier = Modifier.fillMaxWidth()
@@ -97,9 +99,8 @@ fun AddProductScreen(
                 .padding(paddingValues)
                 .padding(24.dp)
         ) {
-            // İlan Türü Seçimi
             Text(
-                text = "İlan Türü",
+                text = "Paylaşım Türü",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = TextDarkPurple
@@ -149,9 +150,8 @@ fun AddProductScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Başlık
             Text(
-                text = "İlan Başlığı",
+                text = if (isNeedRequest) "Talep Başlığı" else "İlan Başlığı",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = TextDarkPurple
@@ -160,14 +160,34 @@ fun AddProductScreen(
             YurtTextField(
                 value = formState.title,
                 onValueChange = { viewModel.onTitleChange(it) },
-                placeholder = "Örn: Az kullanılmış çalışma masası"
+                placeholder = if (isNeedRequest) "Örn: 3 günlüğüne hesap makinesi lazım" else "Örn: Az kullanılmış çalışma masası"
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Fiyat
             Text(
-                text = "Fiyat (₺)",
+                text = "Açıklama (opsiyonel)",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = TextDarkPurple
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            YurtTextField(
+                value = formState.description,
+                onValueChange = { viewModel.onDescriptionChange(it) },
+                placeholder = if (isNeedRequest) {
+                    "Örn: Final haftası için 3 günlüğüne lazım, aynı yurttan teslim alabilirim."
+                } else {
+                    "Örn: Az kullanıldı, çizik yok, akşam teslim edebilirim."
+                },
+                singleLine = false,
+                minLines = 3
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = if (isNeedRequest) "Bütçe / Süre (opsiyonel)" else "Fiyat (₺)",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = TextDarkPurple
@@ -176,14 +196,28 @@ fun AddProductScreen(
             YurtTextField(
                 value = formState.price,
                 onValueChange = { viewModel.onPriceChange(it) },
-                placeholder = "Örn: 250"
+                placeholder = if (isNeedRequest) "Örn: 250 TL altı veya 3 günlüğüne" else "Örn: 250"
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Resim Seçici
             Text(
-                text = "Ürün Fotoğrafı",
+                text = "Teslim Uygunlugu (opsiyonel)",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = TextDarkPurple
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            YurtTextField(
+                value = formState.deliveryPreference,
+                onValueChange = { viewModel.onDeliveryPreferenceChange(it) },
+                placeholder = "Orn: aksam teslim, gece uygun, hafta sonu uygun"
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = if (isNeedRequest) "Referans Fotoğrafı (opsiyonel)" else "Ürün Fotoğrafı",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = TextDarkPurple
@@ -214,7 +248,11 @@ fun AddProductScreen(
                 } else {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         // Resim iconu veya "+" işareti eklenebilir
-                        Text("Galeriden Resim Seç", color = PrimaryLilac, fontWeight = FontWeight.SemiBold)
+                        Text(
+                            if (isNeedRequest) "İstersen Referans Görsel Seç" else "Galeriden Resim Seç",
+                            color = PrimaryLilac,
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
                 }
             }
@@ -229,7 +267,7 @@ fun SegmentedTagControl(
     selectedTag: String,
     onTagSelected: (String) -> Unit
 ) {
-    val options = listOf("Satılık", "Kiralık")
+    val options = listOf(ProductTags.FOR_SALE, ProductTags.FOR_RENT, ProductTags.NEED_REQUEST)
     
     Row(
         modifier = Modifier

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yurtdolap.app.domain.model.Category
 import com.yurtdolap.app.domain.model.Product
+import com.yurtdolap.app.domain.model.ProductTags
 import com.yurtdolap.app.domain.repository.AuthRepository
 import com.yurtdolap.app.domain.repository.ProductRepository
 import com.yurtdolap.app.domain.repository.UserRepository
@@ -21,10 +22,12 @@ import javax.inject.Inject
 
 data class AddProductState(
     val title: String = "",
+    val description: String = "",
     val price: String = "",
+    val deliveryPreference: String = "",
     val imageUri: Uri? = null,
     val selectedCategoryId: String? = null,
-    val selectedTag: String = "Satılık", // Default "Satılık" (For Sale) or "Kiralık" (For Rent)
+    val selectedTag: String = ProductTags.FOR_SALE,
     val categories: List<Category> = listOf(
         Category("1", "Elektronik", "ic_monitor"),
         Category("2", "Kitap", "ic_book"),
@@ -51,8 +54,16 @@ class AddProductViewModel @Inject constructor(
         _formState.value = _formState.value.copy(title = title)
     }
 
+    fun onDescriptionChange(description: String) {
+        _formState.value = _formState.value.copy(description = description)
+    }
+
     fun onPriceChange(price: String) {
         _formState.value = _formState.value.copy(price = price)
+    }
+
+    fun onDeliveryPreferenceChange(deliveryPreference: String) {
+        _formState.value = _formState.value.copy(deliveryPreference = deliveryPreference)
     }
 
     fun onImageSelect(uri: Uri?) {
@@ -70,8 +81,15 @@ class AddProductViewModel @Inject constructor(
     fun addProduct(context: Context) {
         val currentState = _formState.value
         
-        if (currentState.title.isBlank() || currentState.price.isBlank() || currentState.selectedCategoryId == null) {
-            _uiState.value = UIState.Error("Lütfen başlık, fiyat ve kategori alanlarını doldurun.")
+        val isNeedRequest = currentState.selectedTag == ProductTags.NEED_REQUEST
+        if (currentState.title.isBlank() || currentState.selectedCategoryId == null || (!isNeedRequest && currentState.price.isBlank())) {
+            _uiState.value = UIState.Error(
+                if (isNeedRequest) {
+                    "Lütfen başlık ve kategori alanlarını doldurun."
+                } else {
+                    "Lütfen başlık, fiyat ve kategori alanlarını doldurun."
+                }
+            )
             return
         }
 
@@ -119,13 +137,15 @@ class AddProductViewModel @Inject constructor(
                 val product = Product(
                     id = "", // Let Firestore generate ID
                     title = currentState.title,
-                    price = currentState.price,
+                    description = currentState.description.trim(),
+                    price = if (isNeedRequest && currentState.price.isBlank()) "Bütçe belirtilmedi" else currentState.price,
                     imageUrl = uploadedImageUrl,
                     tag = currentState.selectedTag,
                     categoryId = currentState.selectedCategoryId,
                     sellerName = userName,
                     sellerId = currentUserId,
                     dormitory = userDormitory,
+                    deliveryPreference = currentState.deliveryPreference.trim(),
                     isAvailable = true
                 )
 

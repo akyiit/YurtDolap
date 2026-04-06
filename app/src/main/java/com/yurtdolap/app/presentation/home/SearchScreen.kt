@@ -13,6 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.yurtdolap.app.domain.model.Product
+import com.yurtdolap.app.domain.model.isNeedRequest
 import com.yurtdolap.app.presentation.designsystem.components.ProductCard
 import com.yurtdolap.app.presentation.designsystem.components.UIStateWrapper
 import com.yurtdolap.app.presentation.designsystem.components.YurtTextField
@@ -38,7 +40,7 @@ fun SearchScreen(
                 .padding(top = 48.dp, bottom = 24.dp, start = 24.dp, end = 24.dp)
         ) {
             Text(
-                text = "İlan Ara",
+                text = "İlan ve Talep Ara",
                 style = androidx.compose.material3.MaterialTheme.typography.displayLarge,
                 fontWeight = FontWeight.Bold,
                 color = TextDarkPurple
@@ -47,7 +49,7 @@ fun SearchScreen(
             YurtTextField(
                 value = searchQuery,
                 onValueChange = { viewModel.updateSearchQuery(it) },
-                placeholder = "Mini buzdolabı, kitap, kettle..."
+                placeholder = "Kiralık ütü, 250 TL altı lamba, kettle..."
             )
         }
 
@@ -73,6 +75,8 @@ fun SearchScreen(
                             price = product.price,
                             imageUrl = product.imageUrl,
                             tag = product.tag,
+                            location = product.dormitory,
+                            deliveryLabel = deliveryLabelFor(product),
                             onClick = { onNavigateToDetail(product.id) }
                         )
                     }
@@ -80,4 +84,10 @@ fun SearchScreen(
             }
         }
     }
+}
+
+private fun deliveryLabelFor(product: Product): String? {
+    return product.deliveryPreference
+        .takeIf { it.isNotBlank() }
+        ?.let { "Teslim: $it" }
 }

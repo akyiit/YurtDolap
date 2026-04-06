@@ -1,4 +1,4 @@
-package com.yurtdolap.app.presentation.designsystem.components
+﻿package com.yurtdolap.app.presentation.designsystem.components
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
@@ -31,12 +31,12 @@ sealed class UIState<out T> {
 @Composable
 fun <T> UIStateWrapper(
     state: UIState<T>,
-    loadingMessage: String = "Yükleniyor...",
+    loadingMessage: String = "Yukleniyor...",
+    loadingContent: (@Composable () -> Unit)? = null,
     onRetry: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     successContent: @Composable (T) -> Unit
 ) {
-    // We never do instant state changes. We use AnimatedContent with 300ms transitions.
     AnimatedContent(
         targetState = state,
         transitionSpec = {
@@ -50,11 +50,15 @@ fun <T> UIStateWrapper(
                 Box(modifier = Modifier.fillMaxSize())
             }
             is UIState.Loading -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        CircularProgressIndicator(color = PrimaryLilac)
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(text = loadingMessage, style = MaterialTheme.typography.bodyLarge)
+                if (loadingContent != null) {
+                    loadingContent()
+                } else {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            CircularProgressIndicator(color = PrimaryLilac)
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(text = loadingMessage, style = MaterialTheme.typography.bodyLarge)
+                        }
                     }
                 }
             }
@@ -65,7 +69,7 @@ fun <T> UIStateWrapper(
                         modifier = Modifier.padding(32.dp)
                     ) {
                         Text(
-                            text = "Bir hata oluştu",
+                            text = "Bir hata olustu",
                             style = MaterialTheme.typography.titleLarge,
                             color = ErrorRed
                         )

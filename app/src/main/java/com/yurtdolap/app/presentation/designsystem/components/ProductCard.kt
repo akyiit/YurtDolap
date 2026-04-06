@@ -32,12 +32,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.yurtdolap.app.presentation.designsystem.theme.CtaGreen
+import com.yurtdolap.app.presentation.designsystem.theme.ErrorRed
 import com.yurtdolap.app.presentation.designsystem.theme.OutlineSoft
 import com.yurtdolap.app.presentation.designsystem.theme.PrimaryLilac
 import com.yurtdolap.app.presentation.designsystem.theme.SurfaceLight
@@ -50,6 +52,9 @@ fun ProductCard(
     imageUrl: String?,
     tag: String,
     isFavorite: Boolean = false,
+    location: String? = null,
+    timeLabel: String? = null,
+    deliveryLabel: String? = null,
     onFavoriteClick: (() -> Unit)? = null,
     onClick: () -> Unit,
     onDeleteClick: (() -> Unit)? = null,
@@ -105,20 +110,18 @@ fun ProductCard(
                         )
                 )
 
-                Surface(
-                    shape = RoundedCornerShape(999.dp),
-                    color = PrimaryLilac,
+                Row(
                     modifier = Modifier
                         .align(Alignment.TopStart)
-                        .padding(10.dp)
+                        .padding(10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
-                    Text(
+                    StatusChip(
                         text = tag,
-                        color = SurfaceLight,
-                        style = MaterialTheme.typography.labelMedium,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
+                        backgroundColor = PrimaryLilac,
+                        textColor = SurfaceLight
                     )
+
                 }
 
                 Row(
@@ -141,14 +144,14 @@ fun ProductCard(
                             onClick = onDeleteClick,
                             icon = Icons.Default.Delete,
                             contentDescription = "Sil",
-                            tint = MaterialTheme.colorScheme.error
+                            tint = ErrorRed
                         )
                     } else if (onFavoriteClick != null) {
                         RoundedActionButton(
                             onClick = onFavoriteClick,
                             icon = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                             contentDescription = "Favori",
-                            tint = if (isFavorite) MaterialTheme.colorScheme.error else TextDarkPurple.copy(alpha = 0.75f)
+                            tint = if (isFavorite) ErrorRed else TextDarkPurple.copy(alpha = 0.75f)
                         )
                     }
                 }
@@ -163,6 +166,41 @@ fun ProductCard(
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
+
+                if (!location.isNullOrBlank() || !timeLabel.isNullOrBlank()) {
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        if (!location.isNullOrBlank()) {
+                            Text(
+                                text = location,
+                                style = MaterialTheme.typography.labelMedium,
+                                color = TextDarkPurple.copy(alpha = 0.72f),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.weight(1f, fill = false)
+                            )
+                        }
+                        if (!timeLabel.isNullOrBlank()) {
+                            Text(
+                                text = timeLabel,
+                                style = MaterialTheme.typography.labelMedium,
+                                color = TextDarkPurple.copy(alpha = 0.62f)
+                            )
+                        }
+                    }
+                }
+
+                if (!deliveryLabel.isNullOrBlank()) {
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = deliveryLabel,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = PrimaryLilac,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(8.dp))
                 HorizontalDivider(color = OutlineSoft.copy(alpha = 0.8f), thickness = 1.dp)
@@ -179,20 +217,76 @@ fun ProductCard(
     }
 }
 
+@Composable
+fun ProductCardSkeleton(modifier: Modifier = Modifier) {
+    val shape = RoundedCornerShape(16.dp)
+
+    Surface(
+        modifier = modifier
+            .fillMaxWidth()
+            .border(1.dp, OutlineSoft.copy(alpha = 0.9f), shape),
+        shape = shape,
+        color = SurfaceLight
+    ) {
+        Column {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(152.dp)
+                    .background(OutlineSoft.copy(alpha = 0.6f))
+            )
+            Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 11.dp)) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(18.dp)
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(OutlineSoft.copy(alpha = 0.7f))
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.7f)
+                        .height(14.dp)
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(OutlineSoft.copy(alpha = 0.6f))
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.45f)
+                        .height(20.dp)
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(OutlineSoft.copy(alpha = 0.8f))
+                )
+            }
+        }
+    }
+}
+
 private fun formatPrice(raw: String): String {
     val trimmed = raw.trim()
     if (trimmed.isEmpty()) return trimmed
-    if (trimmed.contains("₺")) return trimmed
-    if (Regex("\\bTL\\b", RegexOption.IGNORE_CASE).containsMatchIn(trimmed)) {
-        return trimmed.replace(Regex("\\bTL\\b", RegexOption.IGNORE_CASE), "₺")
+
+    val normalized = trimmed
+        .replace("₺", "TL")
+        .replace(Regex("\\s+"), " ")
+
+    if (Regex("\\bTL\\b", RegexOption.IGNORE_CASE).containsMatchIn(normalized)) {
+        return normalized.replace(Regex("\\bTL\\b", RegexOption.IGNORE_CASE), "TL")
     }
-    return "₺ $trimmed"
+
+    if (Regex("[A-Za-zÇĞİÖŞÜçğıöşü]").containsMatchIn(normalized)) {
+        return normalized
+    }
+
+    return "$normalized TL"
 }
 
 @Composable
 private fun RoundedActionButton(
     onClick: () -> Unit,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    icon: ImageVector,
     contentDescription: String,
     tint: Color
 ) {
@@ -210,5 +304,25 @@ private fun RoundedActionButton(
                 modifier = Modifier.size(18.dp)
             )
         }
+    }
+}
+
+@Composable
+private fun StatusChip(
+    text: String,
+    backgroundColor: Color,
+    textColor: Color
+) {
+    Surface(
+        shape = RoundedCornerShape(999.dp),
+        color = backgroundColor
+    ) {
+        Text(
+            text = text,
+            color = textColor,
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
+        )
     }
 }

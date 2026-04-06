@@ -60,7 +60,10 @@ class SearchViewModel @Inject constructor(
         }
 
         val filtered = allProducts.filter { product ->
-            product.title.contains(query, ignoreCase = true) || product.tag.contains(query, ignoreCase = true)
+            product.title.contains(query, ignoreCase = true) ||
+                product.tag.contains(query, ignoreCase = true) ||
+                product.dormitory.contains(query, ignoreCase = true) ||
+                product.price.contains(query, ignoreCase = true)
         }
         
         _uiState.value = UIState.Success(filtered)

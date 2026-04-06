@@ -19,6 +19,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.yurtdolap.app.domain.model.Product
+import com.yurtdolap.app.domain.model.isNeedRequest
 import com.yurtdolap.app.presentation.designsystem.components.ProductCard
 import com.yurtdolap.app.presentation.designsystem.components.UIStateWrapper
 import com.yurtdolap.app.presentation.designsystem.theme.BackgroundWhite
@@ -69,6 +71,8 @@ fun SavedScreen(
                             imageUrl = product.imageUrl,
                             tag = product.tag,
                             isFavorite = state.favoriteIds.contains(product.id),
+                            location = product.dormitory,
+                            deliveryLabel = deliveryLabelFor(product),
                             onFavoriteClick = { viewModel.toggleFavorite(product.id) },
                             onClick = { onNavigateToDetail(product.id) }
                         )
@@ -77,6 +81,12 @@ fun SavedScreen(
             }
         }
     }
+}
+
+private fun deliveryLabelFor(product: Product): String? {
+    return product.deliveryPreference
+        .takeIf { it.isNotBlank() }
+        ?.let { "Teslim: $it" }
 }
 
 @Composable

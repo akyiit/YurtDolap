@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -44,8 +45,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yurtdolap.app.domain.model.Category
 import com.yurtdolap.app.domain.model.Product
+import com.yurtdolap.app.domain.model.ProductTags
+import com.yurtdolap.app.domain.model.isNeedRequest
 import com.yurtdolap.app.presentation.designsystem.components.ProductCard
+import com.yurtdolap.app.presentation.designsystem.components.ProductCardSkeleton
 import com.yurtdolap.app.presentation.designsystem.components.UIStateWrapper
+import com.yurtdolap.app.presentation.designsystem.components.YurtSecondaryButton
 import com.yurtdolap.app.presentation.designsystem.components.YurtTextField
 import com.yurtdolap.app.presentation.designsystem.theme.BackgroundWhite
 import com.yurtdolap.app.presentation.designsystem.theme.OutlineSoft
@@ -54,6 +59,13 @@ import com.yurtdolap.app.presentation.designsystem.theme.SecondaryLavender
 import com.yurtdolap.app.presentation.designsystem.theme.SurfaceLight
 import com.yurtdolap.app.presentation.designsystem.theme.TextDarkPurple
 
+enum class HomeListingTypeFilter(val label: String) {
+    ALL("Tum Ilanlar"),
+    FOR_SALE("Satilik"),
+    FOR_RENT("Kiralik"),
+    NEEDS("Talepler")
+}
+
 @Composable
 fun HomeScreen(
     onNavigateToDetail: (String) -> Unit,
@@ -61,20 +73,38 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var searchQuery by rememberSaveable { mutableStateOf("") }
+    var selectedListingType by rememberSaveable { mutableStateOf(HomeListingTypeFilter.ALL.name) }
+    var filtersExpanded by rememberSaveable { mutableStateOf(false) }
 
     UIStateWrapper(
         state = uiState,
+        loadingContent = { HomeLoadingSkeleton() },
         onRetry = { viewModel.loadHomeData() }
     ) { state ->
-        val filteredProducts = remember(state.featuredProducts, searchQuery) {
-            if (searchQuery.isBlank()) {
+        val listingType = HomeListingTypeFilter.valueOf(selectedListingType)
+
+        val filteredProducts = remember(state.featuredProducts, searchQuery, listingType) {
+            val searched = if (searchQuery.isBlank()) {
                 state.featuredProducts
             } else {
                 state.featuredProducts.filter {
-                    it.title.contains(searchQuery.trim(), ignoreCase = true)
+                    val query = searchQuery.trim()
+                    it.title.contains(query, ignoreCase = true) ||
+                        it.tag.contains(query, ignoreCase = true) ||
+                        it.dormitory.contains(query, ignoreCase = true) ||
+                        it.price.contains(query, ignoreCase = true)
                 }
             }
+
+            when (listingType) {
+                HomeListingTypeFilter.ALL -> searched
+                HomeListingTypeFilter.FOR_SALE -> searched.filter { it.tag == ProductTags.FOR_SALE }
+                HomeListingTypeFilter.FOR_RENT -> searched.filter { it.tag == ProductTags.FOR_RENT }
+                HomeListingTypeFilter.NEEDS -> searched.filter { it.isNeedRequest() }
+            }
         }
+
+        val highlightedProducts = remember(filteredProducts) { filteredProducts.take(6) }
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
@@ -90,16 +120,33 @@ fun HomeScreen(
                     searchQuery = searchQuery,
                     onSearchQueryChange = { searchQuery = it },
                     totalCount = state.featuredProducts.size,
-                    filteredCount = filteredProducts.size
+                    filteredCount = filteredProducts.size,
+                    categories = state.categories,
+                    selectedCategoryId = state.selectedCategoryId,
+                    selectedListingType = listingType,
+                    filtersExpanded = filtersExpanded,
+                    onFiltersExpandedChange = { filtersExpanded = it },
+                    onListingTypeSelected = { selectedListingType = it.name },
+                    onCategorySelected = { viewModel.selectCategory(it) },
+                    onClearFilters = {
+                        searchQuery = ""
+                        selectedListingType = HomeListingTypeFilter.ALL.name
+                        if (state.selectedCategoryId != null) {
+                            viewModel.selectCategory(null)
+                        }
+                    }
                 )
             }
 
-            items(count = 1, span = { GridItemSpan(maxLineSpan) }) {
-                CategoriesSection(
-                    categories = state.categories,
-                    selectedCategoryId = state.selectedCategoryId,
-                    onCategoryClick = { viewModel.selectCategory(it) }
-                )
+            if (highlightedProducts.isNotEmpty()) {
+                items(count = 1, span = { GridItemSpan(maxLineSpan) }) {
+                    FeaturedCarouselSection(
+                        products = highlightedProducts,
+                        favoriteIds = state.favoriteIds,
+                        onFavoriteClick = { viewModel.toggleFavorite(it) },
+                        onProductClick = onNavigateToDetail
+                    )
+                }
             }
 
             items(count = 1, span = { GridItemSpan(maxLineSpan) }) {
@@ -108,7 +155,15 @@ fun HomeScreen(
 
             if (filteredProducts.isEmpty()) {
                 items(count = 1, span = { GridItemSpan(maxLineSpan) }) {
-                    EmptyProductsState()
+                    EmptyProductsState(
+                        onClearFilters = {
+                            searchQuery = ""
+                            selectedListingType = HomeListingTypeFilter.ALL.name
+                            if (state.selectedCategoryId != null) {
+                                viewModel.selectCategory(null)
+                            }
+                        }
+                    )
                 }
             } else {
                 items(filteredProducts, key = { it.id }) { product ->
@@ -118,6 +173,9 @@ fun HomeScreen(
                         imageUrl = product.imageUrl,
                         tag = product.tag,
                         isFavorite = state.favoriteIds.contains(product.id),
+                        location = product.dormitory,
+                        timeLabel = "Bugun",
+                        deliveryLabel = deliveryLabelFor(product),
                         onFavoriteClick = { viewModel.toggleFavorite(product.id) },
                         onClick = { onNavigateToDetail(product.id) }
                     )
@@ -132,7 +190,15 @@ fun HomeHeroSection(
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
     totalCount: Int,
-    filteredCount: Int
+    filteredCount: Int,
+    categories: List<Category>,
+    selectedCategoryId: String?,
+    selectedListingType: HomeListingTypeFilter,
+    filtersExpanded: Boolean,
+    onFiltersExpandedChange: (Boolean) -> Unit,
+    onListingTypeSelected: (HomeListingTypeFilter) -> Unit,
+    onCategorySelected: (String?) -> Unit,
+    onClearFilters: () -> Unit
 ) {
     Card(
         shape = RoundedCornerShape(24.dp),
@@ -167,7 +233,7 @@ fun HomeHeroSection(
                         )
                     }
                     Text(
-                        text = "Yurtta ihtiyacin olan ne varsa burada.",
+                        text = "Yurtta ihtiyacin olan her sey burada.",
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = SurfaceLight
@@ -177,7 +243,7 @@ fun HomeHeroSection(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Text(
-                    text = "Hizli ara, kategoriyi sec ve en uygun ilana ulas.",
+                    text = "İlanları ve ihtiyaç taleplerini aynı yerden keşfet.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = SurfaceLight.copy(alpha = 0.95f)
                 )
@@ -187,8 +253,29 @@ fun HomeHeroSection(
                 YurtTextField(
                     value = searchQuery,
                     onValueChange = onSearchQueryChange,
-                    placeholder = "Orn: mini buzdolabi, kitap, kettle"
+                    placeholder = "Örn: mini buzdolabı, kitap, kettle veya hesap makinesi"
                 )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                FilterToggleRow(
+                    selectedListingType = selectedListingType,
+                    selectedCategoryName = categories.firstOrNull { it.id == selectedCategoryId }?.name ?: "Tum kategoriler",
+                    filtersExpanded = filtersExpanded,
+                    onToggleClick = { onFiltersExpandedChange(!filtersExpanded) }
+                )
+
+                if (filtersExpanded) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    HomeFilterPanel(
+                        categories = categories,
+                        selectedCategoryId = selectedCategoryId,
+                        selectedListingType = selectedListingType,
+                        onListingTypeSelected = onListingTypeSelected,
+                        onCategorySelected = onCategorySelected,
+                        onClearFilters = onClearFilters
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -196,6 +283,153 @@ fun HomeHeroSection(
                     InfoPill(label = "Toplam", value = totalCount.toString())
                     InfoPill(label = "Gosterilen", value = filteredCount.toString())
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun FilterToggleRow(
+    selectedListingType: HomeListingTypeFilter,
+    selectedCategoryName: String,
+    filtersExpanded: Boolean,
+    onToggleClick: () -> Unit
+) {
+    Surface(
+        onClick = onToggleClick,
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        color = SurfaceLight.copy(alpha = 0.18f),
+        border = BorderStroke(1.dp, SurfaceLight.copy(alpha = 0.35f))
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Filtrele",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = SurfaceLight,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "${selectedListingType.label} / $selectedCategoryName",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = SurfaceLight.copy(alpha = 0.85f)
+                )
+            }
+            Text(
+                text = if (filtersExpanded) "Kapat" else "Ac",
+                style = MaterialTheme.typography.labelLarge,
+                color = SurfaceLight,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+@Composable
+private fun HomeFilterPanel(
+    categories: List<Category>,
+    selectedCategoryId: String?,
+    selectedListingType: HomeListingTypeFilter,
+    onListingTypeSelected: (HomeListingTypeFilter) -> Unit,
+    onCategorySelected: (String?) -> Unit,
+    onClearFilters: () -> Unit
+) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
+        color = SurfaceLight.copy(alpha = 0.96f)
+    ) {
+        Column(modifier = Modifier.padding(14.dp)) {
+            Text(
+                text = "Paylasim turu",
+                style = MaterialTheme.typography.labelLarge,
+                color = TextDarkPurple,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(HomeListingTypeFilter.values().toList()) { filter ->
+                    CategoryChip(
+                        label = filter.label,
+                        isSelected = filter == selectedListingType,
+                        onClick = { onListingTypeSelected(filter) }
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "Kategori",
+                style = MaterialTheme.typography.labelLarge,
+                color = TextDarkPurple,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                item {
+                    CategoryChip(
+                        label = "Tum",
+                        isSelected = selectedCategoryId == null,
+                        onClick = { onCategorySelected(null) }
+                    )
+                }
+                items(categories, key = { it.id }) { category ->
+                    CategoryChip(
+                        label = category.name,
+                        isSelected = category.id == selectedCategoryId,
+                        onClick = { onCategorySelected(category.id) }
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(14.dp))
+            YurtSecondaryButton(
+                text = "Filtreleri Temizle",
+                onClick = onClearFilters
+            )
+        }
+    }
+}
+
+@Composable
+private fun FeaturedCarouselSection(
+    products: List<Product>,
+    favoriteIds: List<String>,
+    onFavoriteClick: (String) -> Unit,
+    onProductClick: (String) -> Unit
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Text(
+            text = "Bugun One Cikanlar",
+            style = MaterialTheme.typography.titleMedium,
+            color = TextDarkPurple,
+            fontWeight = FontWeight.Bold
+        )
+
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(end = 4.dp)
+        ) {
+            items(products, key = { it.id }) { product ->
+                ProductCard(
+                    modifier = Modifier.width(240.dp),
+                    title = product.title,
+                    price = product.price,
+                    imageUrl = product.imageUrl,
+                    tag = product.tag,
+                    isFavorite = favoriteIds.contains(product.id),
+                    location = product.dormitory,
+                    timeLabel = "Bugun",
+                    deliveryLabel = deliveryLabelFor(product),
+                    onFavoriteClick = { onFavoriteClick(product.id) },
+                    onClick = { onProductClick(product.id) }
+                )
             }
         }
     }
@@ -223,44 +457,6 @@ private fun InfoPill(label: String, value: String) {
                 color = SurfaceLight,
                 fontWeight = FontWeight.Bold
             )
-        }
-    }
-}
-
-@Composable
-fun CategoriesSection(
-    categories: List<Category>,
-    selectedCategoryId: String?,
-    onCategoryClick: (String?) -> Unit
-) {
-    Column {
-        Text(
-            text = "Kategoriler",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = TextDarkPurple
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            contentPadding = PaddingValues(end = 4.dp)
-        ) {
-            item {
-                CategoryChip(
-                    label = "Tum",
-                    isSelected = selectedCategoryId == null,
-                    onClick = { onCategoryClick(null) }
-                )
-            }
-
-            items(categories, key = { it.id }) { category ->
-                CategoryChip(
-                    label = category.name,
-                    isSelected = category.id == selectedCategoryId,
-                    onClick = { onCategoryClick(category.id) }
-                )
-            }
         }
     }
 }
@@ -299,7 +495,7 @@ private fun FeaturedProductsHeader(productCount: Int) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = "One Cikan Ilanlar",
+            text = "One Cikan Ilan ve Talepler",
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
             color = TextDarkPurple
@@ -321,7 +517,7 @@ private fun FeaturedProductsHeader(productCount: Int) {
 }
 
 @Composable
-private fun EmptyProductsState() {
+private fun EmptyProductsState(onClearFilters: () -> Unit) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
@@ -340,10 +536,55 @@ private fun EmptyProductsState() {
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
-                text = "Farkli bir arama veya kategori deneyebilirsin.",
+                text = "Filtrelerini temizleyip tekrar deneyebilirsin.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = TextDarkPurple.copy(alpha = 0.75f)
             )
+            Spacer(modifier = Modifier.height(14.dp))
+            YurtSecondaryButton(
+                text = "Filtreleri Temizle",
+                onClick = onClearFilters,
+                modifier = Modifier.fillMaxWidth(0.7f)
+            )
         }
     }
+}
+
+@Composable
+private fun HomeLoadingSkeleton() {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BackgroundWhite),
+        horizontalArrangement = Arrangement.spacedBy(14.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp),
+        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 20.dp)
+    ) {
+        items(count = 1, span = { GridItemSpan(maxLineSpan) }) {
+            Surface(shape = RoundedCornerShape(24.dp), color = OutlineSoft.copy(alpha = 0.5f)) {
+                Box(modifier = Modifier.fillMaxWidth().height(196.dp))
+            }
+        }
+
+        items(count = 1, span = { GridItemSpan(maxLineSpan) }) {
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                items(4) {
+                    Surface(shape = RoundedCornerShape(14.dp), color = OutlineSoft.copy(alpha = 0.5f)) {
+                        Box(modifier = Modifier.width(88.dp).height(36.dp))
+                    }
+                }
+            }
+        }
+
+        items(6) {
+            ProductCardSkeleton()
+        }
+    }
+}
+
+private fun deliveryLabelFor(product: Product): String? {
+    return product.deliveryPreference
+        .takeIf { it.isNotBlank() }
+        ?.let { "Teslim: $it" }
 }

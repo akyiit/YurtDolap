@@ -39,6 +39,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.yurtdolap.app.R
 import com.yurtdolap.app.domain.model.Product
+import com.yurtdolap.app.domain.model.isNeedRequest
 import com.yurtdolap.app.presentation.designsystem.components.UIStateWrapper
 import com.yurtdolap.app.presentation.designsystem.components.YurtPrimaryButton
 import com.yurtdolap.app.presentation.designsystem.components.YurtSecondaryButton
@@ -91,11 +92,16 @@ fun DetailScreen(
 
             Column(modifier = Modifier.padding(20.dp)) {
                 ProductInfoCard(product = product)
+                if (product.description.isNotBlank()) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    ProductDescriptionCard(description = product.description)
+                }
                 Spacer(modifier = Modifier.height(16.dp))
                 SellerTrustBlock(product = product)
                 Spacer(modifier = Modifier.height(20.dp))
                 ActionBlock(
                     isAdmin = isAdmin,
+                    isNeedRequest = product.isNeedRequest(),
                     onMessageClick = { viewModel.onMessageSellerClicked() },
                     onAdminDelete = { viewModel.deleteProductAsAdmin() }
                 )
@@ -199,7 +205,12 @@ private fun ProductInfoCard(product: Product) {
                     shape = RoundedCornerShape(999.dp)
                 ) {
                     Text(
-                        text = if (product.isAvailable) "Stokta" else "Tukendi",
+                        text = when {
+                            product.isNeedRequest() && product.isAvailable -> "Talep aktif"
+                            product.isNeedRequest() -> "Talep kapalı"
+                            product.isAvailable -> "Stokta"
+                            else -> "Tukendi"
+                        },
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                         color = CtaGreen,
                         style = MaterialTheme.typography.labelMedium,
@@ -221,7 +232,42 @@ private fun ProductInfoCard(product: Product) {
 
             InfoRow(label = "Kategori", value = categoryLabel(product.categoryId))
             InfoRow(label = "Yurt", value = product.dormitory)
-            InfoRow(label = "Durum", value = if (product.isAvailable) "Urun aktif" else "Urun pasif")
+            if (product.deliveryPreference.isNotBlank()) {
+                InfoRow(label = "Teslim", value = product.deliveryPreference)
+            }
+            InfoRow(
+                label = "Durum",
+                value = when {
+                    product.isNeedRequest() && product.isAvailable -> "Talep aktif"
+                    product.isNeedRequest() -> "Talep kapalı"
+                    product.isAvailable -> "Urun aktif"
+                    else -> "Urun pasif"
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun ProductDescriptionCard(description: String) {
+    Surface(
+        shape = RoundedCornerShape(16.dp),
+        color = SurfaceLight,
+        border = BorderStroke(1.dp, OutlineSoft)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = "Açıklama",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = TextDarkPurple
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = description,
+                style = MaterialTheme.typography.bodyMedium,
+                color = TextDarkPurple.copy(alpha = 0.78f)
+            )
         }
     }
 }
@@ -268,6 +314,7 @@ private fun formatPrice(raw: String): String {
     if (Regex("\\bTL\\b", RegexOption.IGNORE_CASE).containsMatchIn(trimmed)) {
         return trimmed.replace(Regex("\\bTL\\b", RegexOption.IGNORE_CASE), TurkishLira)
     }
+    if (Regex("[A-Za-zÇĞİÖŞÜçğıöşü]").containsMatchIn(trimmed)) return trimmed
     return "$TurkishLira $trimmed"
 }
 
@@ -281,7 +328,7 @@ fun SellerTrustBlock(product: Product) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = "Satici Bilgileri",
+                text = if (product.isNeedRequest()) "Talep Sahibi" else "Satici Bilgileri",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = TextDarkPurple
@@ -339,6 +386,7 @@ fun SellerTrustBlock(product: Product) {
 @Composable
 private fun ActionBlock(
     isAdmin: Boolean,
+    isNeedRequest: Boolean,
     onMessageClick: () -> Unit,
     onAdminDelete: () -> Unit
 ) {
@@ -350,7 +398,7 @@ private fun ActionBlock(
     ) {
         Column(modifier = Modifier.padding(14.dp)) {
             YurtPrimaryButton(
-                text = "Saticiya Mesaj At",
+                text = if (isNeedRequest) "Talep Sahibine Mesaj At" else "Saticiya Mesaj At",
                 onClick = onMessageClick
             )
 

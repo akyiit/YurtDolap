@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.yurtdolap.app.domain.model.ProductTags
 import coil.compose.AsyncImage
 import com.yurtdolap.app.presentation.designsystem.components.UIState
 import com.yurtdolap.app.presentation.designsystem.components.YurtPrimaryButton
@@ -44,6 +45,7 @@ fun EditProductScreen(
     val uiState by viewModel.uiState.collectAsState()
     val formState by viewModel.formState.collectAsState()
     val context = LocalContext.current
+    val isNeedRequest = formState.selectedTag == ProductTags.NEED_REQUEST
 
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
@@ -60,7 +62,7 @@ fun EditProductScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("İlanı Düzenle", fontWeight = FontWeight.Bold) },
+                title = { Text(if (isNeedRequest) "Talebi Düzenle" else "İlanı Düzenle", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Geri")
@@ -125,29 +127,59 @@ fun EditProductScreen(
                                 modifier = Modifier.size(48.dp)
                             )
                             Spacer(modifier = Modifier.height(8.dp))
-                            Text("Fotoğrafı Değiştirmek İçin Dokun", color = PrimaryLilac, fontWeight = FontWeight.Bold)
+                            Text(
+                                if (isNeedRequest) "Referans Görseli Değiştirmek İçin Dokun" else "Fotoğrafı Değiştirmek İçin Dokun",
+                                color = PrimaryLilac,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                     }
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                Text(text = "İlan Başlığı", fontWeight = FontWeight.Bold, color = TextDarkPurple)
+                Text(text = if (isNeedRequest) "Talep Başlığı" else "İlan Başlığı", fontWeight = FontWeight.Bold, color = TextDarkPurple)
                 Spacer(modifier = Modifier.height(8.dp))
                 YurtTextField(
                     value = formState.title,
                     onValueChange = { viewModel.onTitleChange(it) },
-                    placeholder = "Örn: Az kullanılmış çalışma masası"
+                    placeholder = if (isNeedRequest) "Örn: Aynı yurttan ikinci el kettle arıyorum" else "Örn: Az kullanılmış çalışma masası"
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Text(text = "Fiyat (₺)", fontWeight = FontWeight.Bold, color = TextDarkPurple)
+                Text("Açıklama (opsiyonel)", fontWeight = FontWeight.Bold, color = TextDarkPurple)
+                Spacer(modifier = Modifier.height(8.dp))
+                YurtTextField(
+                    value = formState.description,
+                    onValueChange = { viewModel.onDescriptionChange(it) },
+                    placeholder = if (isNeedRequest) {
+                        "Örn: Aynı yurttan alabilirim, hafta sonu lazım."
+                    } else {
+                        "Örn: Temiz kullanıldı, kutusu duruyor."
+                    },
+                    singleLine = false,
+                    minLines = 3
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(text = if (isNeedRequest) "Bütçe / Süre (opsiyonel)" else "Fiyat (₺)", fontWeight = FontWeight.Bold, color = TextDarkPurple)
                 Spacer(modifier = Modifier.height(8.dp))
                 YurtTextField(
                     value = formState.price,
                     onValueChange = { viewModel.onPriceChange(it) },
-                    placeholder = "Örn: 500"
+                    placeholder = if (isNeedRequest) "Örn: 250 TL altı veya 3 günlüğüne" else "Örn: 500"
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Text("Teslim Uygunlugu (opsiyonel)", fontWeight = FontWeight.Bold, color = TextDarkPurple)
+                Spacer(modifier = Modifier.height(8.dp))
+                YurtTextField(
+                    value = formState.deliveryPreference,
+                    onValueChange = { viewModel.onDeliveryPreferenceChange(it) },
+                    placeholder = "Orn: aksam teslim, gece uygun, hafta sonu uygun"
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -168,25 +200,33 @@ fun EditProductScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                Text("İlan Türü", fontWeight = FontWeight.Bold, color = TextDarkPurple)
+                Text("Paylaşım Türü", fontWeight = FontWeight.Bold, color = TextDarkPurple)
                 Spacer(modifier = Modifier.height(8.dp))
                 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         RadioButton(
-                            selected = formState.selectedTag == "Satılık",
-                            onClick = { viewModel.onTagSelect("Satılık") },
+                            selected = formState.selectedTag == ProductTags.FOR_SALE,
+                            onClick = { viewModel.onTagSelect(ProductTags.FOR_SALE) },
                             colors = RadioButtonDefaults.colors(selectedColor = PrimaryLilac)
                         )
-                        Text("Satılık", color = TextDarkPurple)
+                        Text(ProductTags.FOR_SALE, color = TextDarkPurple)
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         RadioButton(
-                            selected = formState.selectedTag == "Kiralık",
-                            onClick = { viewModel.onTagSelect("Kiralık") },
+                            selected = formState.selectedTag == ProductTags.FOR_RENT,
+                            onClick = { viewModel.onTagSelect(ProductTags.FOR_RENT) },
                             colors = RadioButtonDefaults.colors(selectedColor = PrimaryLilac)
                         )
-                        Text("Kiralık", color = TextDarkPurple)
+                        Text(ProductTags.FOR_RENT, color = TextDarkPurple)
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        RadioButton(
+                            selected = formState.selectedTag == ProductTags.NEED_REQUEST,
+                            onClick = { viewModel.onTagSelect(ProductTags.NEED_REQUEST) },
+                            colors = RadioButtonDefaults.colors(selectedColor = PrimaryLilac)
+                        )
+                        Text(ProductTags.NEED_REQUEST, color = TextDarkPurple)
                     }
                 }
 

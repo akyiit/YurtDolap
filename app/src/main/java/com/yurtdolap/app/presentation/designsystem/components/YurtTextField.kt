@@ -23,7 +23,9 @@ fun YurtTextField(
     isError: Boolean = false,
     errorMessage: String? = null,
     visualTransformation: androidx.compose.ui.text.input.VisualTransformation = androidx.compose.ui.text.input.VisualTransformation.None,
-    keyboardOptions: androidx.compose.foundation.text.KeyboardOptions = androidx.compose.foundation.text.KeyboardOptions.Default
+    keyboardOptions: androidx.compose.foundation.text.KeyboardOptions = androidx.compose.foundation.text.KeyboardOptions.Default,
+    singleLine: Boolean = true,
+    minLines: Int = 1
 ) {
     OutlinedTextField(
         value = value,
@@ -46,7 +48,8 @@ fun YurtTextField(
             unfocusedTextColor = TextDarkPurple,
             errorBorderColor = ErrorRed
         ),
-        singleLine = true,
+        singleLine = singleLine,
+        minLines = minLines,
         visualTransformation = visualTransformation,
         keyboardOptions = keyboardOptions
     )
